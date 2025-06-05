@@ -1,6 +1,6 @@
 package me.totoku103.crypto.kisa.sha3;
 
-public class sha3 {
+public class Sha3 {
     private static final int SHA3_OK = 0;
     private static final int SHA3_PARAMETER_ERROR = 1;
     private static final int SHA3_SHAKE_NONE = 0;
