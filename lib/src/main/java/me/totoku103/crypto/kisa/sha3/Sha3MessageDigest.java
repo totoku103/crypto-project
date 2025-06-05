@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * JDK MessageDigest를 이용해 속도를 높인 SHA-3 구현입니다.
  */
-public class Sha3Optimized {
+public class Sha3MessageDigest {
 
     private static final int SHA3_OK = 0;
     private static final int SHA3_PARAMETER_ERROR = 1;

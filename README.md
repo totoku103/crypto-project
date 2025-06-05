@@ -1,6 +1,6 @@
 # Crypto Project
 
-`me.totoku103.crypto.kisa.sha3.sha3` 패키지는 순수 자바 SHA-3 구현을 담고 있습니다.
+`me.totoku103.crypto.kisa.sha3.Sha3Vanilla` 패키지는 순수 자바 SHA-3 구현을 담고 있습니다.
 `Sha3Optimized` 클래스는 JDK `MessageDigest`를 사용해 속도를 높였습니다.
 
 ## Tests
