@@ -1,4 +1,4 @@
-package me.totoku103.crypto.kisa.sha3;
+package me.totoku103.crypto.kisa.sha3.model;
 
 public class Sha3Vanilla {
     private static final int SHA3_OK = 0;
@@ -264,7 +264,7 @@ public class Sha3Vanilla {
         return ret;
     }
 
-    public final int sha3Hash(byte[] output, int outLen, byte[] input, int inLen, int bitSize, int useShake) {
+    public final int toHash(byte[] output, int outLen, byte[] input, int inLen, int bitSize, int useShake) {
         int ret = 0;
 
         if (useShake == SHA3_SHAKE_USE) {
