@@ -76,7 +76,7 @@ public class Sha3Vanilla {
     }
 
 
-    private static void keccakf(byte[] state) {
+    private static void keccak(byte[] state) {
         int[] t = new int[2];
         int[][] bc = new int[5][2];
         int[][] s = new int[25][2];
@@ -188,7 +188,7 @@ public class Sha3Vanilla {
             }
 
             if (blockSize == rateInBytes) {
-                keccakf(keccakState);
+                keccak(keccakState);
                 blockSize = 0;
             }
 
@@ -208,11 +208,11 @@ public class Sha3Vanilla {
         keccakState[blockSize] ^= suffix;
 
         if (((suffix & 0x80) != 0) && (blockSize == (rateInBytes - 1)))
-            keccakf(keccakState);
+            keccak(keccakState);
 
         keccakState[rateInBytes - 1] ^= 0x80;
 
-        keccakf(keccakState);
+        keccak(keccakState);
 
         offset = 0;
         while (oLen > 0) {
@@ -224,7 +224,7 @@ public class Sha3Vanilla {
             oLen -= blockSize;
 
             if (oLen > 0)
-                keccakf(keccakState);
+                keccak(keccakState);
         }
 
         return SHA3_OK;
