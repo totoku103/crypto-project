@@ -5,6 +5,7 @@ import me.totoku103.crypto.kisa.sha3.Sha3Optimized;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assumptions;
 
+
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,6 +42,7 @@ public class Sha3Test {
         assertEquals(0, rc);
         assertEquals("3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532", toHex(out));
     }
+
 
     // 최적화 버전 결과 비교 (SHA3-256 지원 시에만 실행)
     @Test
@@ -96,7 +98,6 @@ public class Sha3Test {
         assertEquals("72a5ac0c9cbab2f48b1fc74e951d1102da6de1990c42d1610bfa2cee29e4f86f", toHex(actual));
     }
 
-    // 모든 비트 길이 비교 (최적화 지원 시 실행)
     @Test
     public void testAllBitSizesMatch() {
         Assumptions.assumeTrue(isSha3Available(256));
