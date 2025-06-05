@@ -3,6 +3,8 @@ package test;
 import me.totoku103.crypto.kisa.sha3.sha3;
 import me.totoku103.crypto.kisa.sha3.Sha3Optimized;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assumptions;
+
 
 import java.nio.charset.StandardCharsets;
 
@@ -20,6 +22,16 @@ public class Sha3Test {
         return sb.toString();
     }
 
+    // SHA3 지원 여부 확인
+    private static boolean isSha3Available(final int bitSize) {
+        try {
+            java.security.MessageDigest.getInstance("SHA3-" + bitSize);
+            return true;
+        } catch (java.security.NoSuchAlgorithmException e) {
+            return false;
+        }
+    }
+
     // SHA3-256 벡터 테스트
     @Test
     public void testSha3256Vector() {
@@ -31,9 +43,11 @@ public class Sha3Test {
         assertEquals("3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532", toHex(out));
     }
 
-    // 최적화 버전 결과 비교
+
+    // 최적화 버전 결과 비교 (SHA3-256 지원 시에만 실행)
     @Test
-    public void testOptimizedMatchesOriginal() {
+    public void testOptimizedMatchesOriginal() throws Exception {
+        Assumptions.assumeTrue(isSha3Available(256));
         final sha3 original = new sha3();
         final Sha3Optimized optimized = new Sha3Optimized();
         final byte[] input = "hello world".getBytes(StandardCharsets.UTF_8);
@@ -57,9 +71,10 @@ public class Sha3Test {
         assertEquals("bac29cc3b2b03f661cbd74ade88c8336756706769e96376c7f0d875228595305", toHex(out));
     }
 
-    // 한글 입력 SHA3-512(최적화)
+    // 한글 입력 SHA3-512(최적화, 지원 시 실행)
     @Test
     public void testOptimizedKorean512() {
+        Assumptions.assumeTrue(isSha3Available(512));
         final Sha3Optimized optimized = new Sha3Optimized();
         final byte[] input = "테스트".getBytes(StandardCharsets.UTF_8);
         final byte[] digest = optimized.digest(input, 512);
@@ -68,9 +83,10 @@ public class Sha3Test {
             toHex(digest));
     }
 
-    // 이모지 입력 비교
+    // 이모지 입력 비교 (최적화 지원 시 실행)
     @Test
     public void testUnicodeOptimizedMatchesOriginal() {
+        Assumptions.assumeTrue(isSha3Available(256));
         final sha3 original = new sha3();
         final Sha3Optimized optimized = new Sha3Optimized();
         final byte[] input = "emoji \uD83D\uDE00".getBytes(StandardCharsets.UTF_8);
@@ -82,9 +98,9 @@ public class Sha3Test {
         assertEquals("72a5ac0c9cbab2f48b1fc74e951d1102da6de1990c42d1610bfa2cee29e4f86f", toHex(actual));
     }
 
-    // 모든 비트 길이 비교
     @Test
     public void testAllBitSizesMatch() {
+        Assumptions.assumeTrue(isSha3Available(256));
         final sha3 original = new sha3();
         final Sha3Optimized optimized = new Sha3Optimized();
         final byte[] input = "OpenAI".getBytes(StandardCharsets.UTF_8);
