@@ -1,6 +1,6 @@
-package me.totoku103.crypto.kisa.sha3.model;
+package me.totoku103.crypto.java.sha3;
 
-import me.totoku103.crypto.kisa.sha3.enums.BitSizeType;
+import me.totoku103.crypto.enums.Sha3AlgorithmType;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * JDK MessageDigest를 이용해 속도를 높인 SHA-3 구현입니다.
  */
-public class Sha3MessageDigest {
+public class Sha3 {
 
     private static final int SHA3_OK = 0;
     private static final int SHA3_PARAMETER_ERROR = 1;
@@ -19,7 +19,7 @@ public class Sha3MessageDigest {
      * @param bitSize 224, 256, 384, 512 중 하나
      * @return SHA3 알고리즘이 지원되면 true, 그렇지 않으면 false
      */
-    public static boolean isSha3Available(final BitSizeType bitSize) {
+    public static boolean isSha3Available(final Sha3AlgorithmType bitSize) {
         try {
             java.security.MessageDigest.getInstance(bitSize.getAlgorithmName());
             return true;
@@ -35,12 +35,12 @@ public class Sha3MessageDigest {
      * @param outLen      출력 길이(byte)
      * @param input       입력 데이터
      * @param inLen       입력 길이
-     * @param bitSizeType 224, 256, 384, 512 중 하나
+     * @param sha3AlgorithmType 224, 256, 384, 512 중 하나
      * @return 성공하면 0
      */
-    public int sha3Hash(final byte[] output, final int outLen, final byte[] input, final int inLen, final BitSizeType bitSizeType) {
+    public int sha3Hash(final byte[] output, final int outLen, final byte[] input, final int inLen, final Sha3AlgorithmType sha3AlgorithmType) {
         try {
-            final MessageDigest md = MessageDigest.getInstance(bitSizeType.getAlgorithmName());
+            final MessageDigest md = MessageDigest.getInstance(sha3AlgorithmType.getAlgorithmName());
             md.update(input, 0, inLen);
             final byte[] digest = md.digest();
             if (digest.length != outLen) {
@@ -56,12 +56,12 @@ public class Sha3MessageDigest {
     /**
      * 새 배열로 해시 값을 돌려줍니다.
      */
-    public byte[] toHash(final byte[] input, final BitSizeType bitSizeType) {
+    public byte[] toHash(final byte[] input, final Sha3AlgorithmType sha3AlgorithmType) {
         try {
-            final MessageDigest md = MessageDigest.getInstance(bitSizeType.getAlgorithmName());
+            final MessageDigest md = MessageDigest.getInstance(sha3AlgorithmType.getAlgorithmName());
             return md.digest(input);
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException("Unsupported " + bitSizeType.getAlgorithmName(), e);
+            throw new IllegalArgumentException("Unsupported " + sha3AlgorithmType.getAlgorithmName(), e);
         }
     }
 }

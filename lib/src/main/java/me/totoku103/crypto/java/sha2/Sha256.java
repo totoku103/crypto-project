@@ -1,4 +1,4 @@
-package me.totoku103.crypto.kisa.sha2.model;
+package me.totoku103.crypto.java.sha2;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * JDK MessageDigest를 이용해 SHA-256 해시를 계산합니다.
  */
-public class Sha256MessageDigest {
+public class Sha256 {
 
     private static final int OK = 0;
     private static final int PARAMETER_ERROR = 1;
@@ -62,7 +62,7 @@ public class Sha256MessageDigest {
     /**
      * 입력 데이터를 SHA-256으로 해싱하여 64자리 16진수 문자열을 반환한다.
      * <p>
-     * 기존 {@link Sha256Vanilla#encrypt(byte[])} 는 각 바이트에 0 패딩을 하지 않아
+     * 기존 {@link me.totoku103.crypto.kisa.sha2.Sha256#encrypt(byte[])} 는 각 바이트에 0 패딩을 하지 않아
      * 문자열 길이가 달라질 수 있다. 이 메서드는 0 패딩을 적용하여 일반적인 결과와
      * 동일한 형식을 제공한다.
      * </p>

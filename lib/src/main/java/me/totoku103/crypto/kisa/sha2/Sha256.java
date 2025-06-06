@@ -1,4 +1,4 @@
-package me.totoku103.crypto.kisa.sha2.model;
+package me.totoku103.crypto.kisa.sha2;
 
 /*
   @author Copyright (c) 2013 by KISA
@@ -11,7 +11,7 @@ package me.totoku103.crypto.kisa.sha2.model;
 /**
  * KISA에서 제공하는 SHA256 알고리즘 소스. 변수명, 메소드명 등 CodeStyle만  변경.
  */
-public class Sha256Vanilla {
+public class Sha256 {
 
     // DEFAULT : JAVA = BIG_ENDIAN
     private static final int ENDIAN = Common.BIG_ENDIAN;

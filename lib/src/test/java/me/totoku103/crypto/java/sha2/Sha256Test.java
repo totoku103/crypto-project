@@ -1,16 +1,17 @@
-package me.totoku103.crypto.kisa.sha2.model;
+package me.totoku103.crypto.java.sha2;
 
+import me.totoku103.crypto.kisa.sha2.Sha256;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.security.MessageDigest;
 
-class Sha256MessageDigestTest {
+class Sha256Test {
 
     @Test
     void compareWithJdk() throws Exception {
         String message = "message";
-        Sha256MessageDigest md = new Sha256MessageDigest();
+        me.totoku103.crypto.java.sha2.Sha256 md = new me.totoku103.crypto.java.sha2.Sha256();
         byte[] result = md.toHash(message.getBytes());
 
         MessageDigest jdk = MessageDigest.getInstance("SHA-256");
@@ -21,7 +22,7 @@ class Sha256MessageDigestTest {
     @Test
     void hexStringWithPadding() throws Exception {
         String message = "message";
-        Sha256MessageDigest md = new Sha256MessageDigest();
+        me.totoku103.crypto.java.sha2.Sha256 md = new me.totoku103.crypto.java.sha2.Sha256();
         String hex = md.encrypt(message.getBytes());
 
         MessageDigest jdk = MessageDigest.getInstance("SHA-256");
@@ -35,11 +36,11 @@ class Sha256MessageDigestTest {
     @Test
     void compareWithVanilla() {
         String message = "message";
-        Sha256MessageDigest md = new Sha256MessageDigest();
+        me.totoku103.crypto.java.sha2.Sha256 md = new me.totoku103.crypto.java.sha2.Sha256();
         byte[] result = md.toHash(message.getBytes());
 
         byte[] vanilla = new byte[32];
-        Sha256Vanilla.encrypt(message.getBytes(), message.length(), vanilla);
+        Sha256.encrypt(message.getBytes(), message.length(), vanilla);
         Assertions.assertArrayEquals(vanilla, result);
     }
 
@@ -47,7 +48,7 @@ class Sha256MessageDigestTest {
     void compareOnlineEncryptValue() {
         final String message = "message";
         final String onlineEncrypt = "ab530a13e45914982b79f9b7e3fba994cfd1f3fb22f71cea1afbf02b460c6d1d";
-        final Sha256MessageDigest md = new Sha256MessageDigest();
+        final me.totoku103.crypto.java.sha2.Sha256 md = new me.totoku103.crypto.java.sha2.Sha256();
         final String encrypt = md.encrypt(message.getBytes());
         Assertions.assertEquals(onlineEncrypt, encrypt);
     }
