@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
  */
 public class Sha256 {
 
+    private static final String ALGORITHM_NAME = "SHA-256";
     private static final int OK = 0;
     private static final int PARAMETER_ERROR = 1;
 
@@ -16,7 +17,7 @@ public class Sha256 {
      */
     public static boolean isSha256Available() {
         try {
-            MessageDigest.getInstance("SHA-256");
+            MessageDigest.getInstance(ALGORITHM_NAME);
             return true;
         } catch (NoSuchAlgorithmException e) {
             return false;
@@ -26,15 +27,15 @@ public class Sha256 {
     /**
      * SHA-256 해시를 계산해 주어진 버퍼에 결과를 저장합니다.
      *
-     * @param output   결과 버퍼
-     * @param outLen   출력 길이(byte)
-     * @param input    입력 데이터
-     * @param inLen    입력 길이
+     * @param output 결과 버퍼
+     * @param outLen 출력 길이(byte)
+     * @param input  입력 데이터
+     * @param inLen  입력 길이
      * @return 성공하면 0, 실패하면 1
      */
     public int sha256Hash(final byte[] output, final int outLen, final byte[] input, final int inLen) {
         try {
-            final MessageDigest md = MessageDigest.getInstance("SHA-256");
+            final MessageDigest md = MessageDigest.getInstance(ALGORITHM_NAME);
             md.update(input, 0, inLen);
             final byte[] digest = md.digest();
             if (digest.length != outLen) {
@@ -52,10 +53,10 @@ public class Sha256 {
      */
     public byte[] toHash(final byte[] input) {
         try {
-            final MessageDigest md = MessageDigest.getInstance("SHA-256");
+            final MessageDigest md = MessageDigest.getInstance(ALGORITHM_NAME);
             return md.digest(input);
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException("Unsupported SHA-256", e);
+            throw new IllegalArgumentException("Unsupported " + ALGORITHM_NAME, e);
         }
     }
 
