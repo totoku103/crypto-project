@@ -42,4 +42,13 @@ class Sha256MessageDigestTest {
         Sha256Vanilla.encrypt(message.getBytes(), message.length(), vanilla);
         Assertions.assertArrayEquals(vanilla, result);
     }
+
+    @Test
+    void compareOnlineEncryptValue() {
+        final String message = "message";
+        final String onlineEncrypt = "ab530a13e45914982b79f9b7e3fba994cfd1f3fb22f71cea1afbf02b460c6d1d";
+        final Sha256MessageDigest md = new Sha256MessageDigest();
+        final String encrypt = md.encrypt(message.getBytes());
+        Assertions.assertEquals(onlineEncrypt, encrypt);
+    }
 }

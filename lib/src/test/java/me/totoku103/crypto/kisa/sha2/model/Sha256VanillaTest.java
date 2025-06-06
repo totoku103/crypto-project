@@ -17,5 +17,6 @@ class Sha256VanillaTest {
             sb.append(Integer.toHexString(0xff & pbCipher[i]));
 
         Assertions.assertEquals(encrypt, sb.toString());
+        System.out.println(encrypt);
     }
 }
