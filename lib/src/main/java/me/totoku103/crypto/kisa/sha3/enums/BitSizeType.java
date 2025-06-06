@@ -8,7 +8,7 @@ public enum BitSizeType {
 
 
     private final String algorithmName;
-    private int bitSize;
+    private final int bitSize;
 
     BitSizeType(final String algorithmName, final int bitSize) {
         this.algorithmName = algorithmName;
