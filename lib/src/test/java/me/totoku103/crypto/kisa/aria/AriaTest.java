@@ -58,7 +58,7 @@ class AriaTest {
             final byte[] plain = fromHex(v[2]);
             final byte[] expected = fromHex(v[3]);
 
-            final ARIA aria = new ARIA(keySize);
+            final Aria aria = new Aria(keySize);
             aria.setKey(key);
             aria.setupRoundKeys();
             final byte[] enc = aria.encrypt(plain, 0);

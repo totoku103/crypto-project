@@ -16,7 +16,7 @@ import java.util.*;
 import java.io.PrintStream;
 import java.security.InvalidKeyException;
 
-class ARIA {
+class Aria {
     private static final char[] HEX_DIGITS = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
     };
@@ -121,7 +121,7 @@ class ARIA {
     private byte[] masterKey = null;
     private int[] encRoundKeys = null, decRoundKeys = null;
 
-    public ARIA(int keySize) throws InvalidKeyException {
+    public Aria(int keySize) throws InvalidKeyException {
         setKeySize(keySize);
     }
 
@@ -306,13 +306,13 @@ class ARIA {
         doCrypt(i, ioffset, this.encRoundKeys, this.numberOfRounds, o, ooffset);
     }
 
-    byte[] encrypt(byte[] i, int ioffset) throws InvalidKeyException {
+    byte[] encrypt(byte[] i, int iOffset) throws InvalidKeyException {
         byte[] o = new byte[16];
-        this.encrypt(i, ioffset, o, 0);
+        this.encrypt(i, iOffset, o, 0);
         return o;
     }
 
-    void decrypt(byte[] i, int ioffset, byte[] o, int ooffset) throws InvalidKeyException {
+    void decrypt(byte[] i, int iOffset, byte[] o, int oOffset) throws InvalidKeyException {
         if (this.keySize == 0)
             throw new InvalidKeyException("keySize");
         if (this.decRoundKeys == null)
@@ -320,7 +320,7 @@ class ARIA {
                 throw new InvalidKeyException("masterKey");
             else
                 setupDecRoundKeys();
-        doCrypt(i, ioffset, this.decRoundKeys, this.numberOfRounds, o, ooffset);
+        doCrypt(i, iOffset, this.decRoundKeys, this.numberOfRounds, o, oOffset);
     }
 
     byte[] decrypt(byte[] i, int ioffset) throws InvalidKeyException {
@@ -533,25 +533,19 @@ class ARIA {
                 0x01010001 * ((t >>> 8) & 0xff) ^ 0x01010100 * (t & 0xff);
     }
 
-    //  private static final int ms(int t) {
-    //    return TS1[(t>>>24)&0xff]^TS2[(t>>>16)&0xff]^TX1[(t>>>8)&0xff]^TX2[t&0xff];
-    //  }
-    //  private static final int mx(int t) {
-    //    return TX1[(t>>>24)&0xff]^TX2[(t>>>16)&0xff]^TS1[(t>>>8)&0xff]^TS2[t&0xff];
-    //  }
-    private static final int badc(int t) {
+    private static int badc(int t) {
         return ((t << 8) & 0xff00ff00) ^ ((t >>> 8) & 0x00ff00ff);
     }
 
-    private static final int cdab(int t) {
+    private static int cdab(int t) {
         return ((t << 16) & 0xffff0000) ^ ((t >>> 16) & 0x0000ffff);
     }
 
-    private static final int dcba(int t) {
+    private static int dcba(int t) {
         return (t & 0x000000ff) << 24 ^ (t & 0x0000ff00) << 8 ^ (t & 0x00ff0000) >>> 8 ^ (t & 0xff000000) >>> 24;
     }
 
-    private static final void gsrk(int[] x, int[] y, int rot, int[] rk, int offset) {
+    private static void gsrk(int[] x, int[] y, int rot, int[] rk, int offset) {
         int q = 4 - (rot / 32), r = rot % 32, s = 32 - r;
 
         rk[offset] = x[0] ^ y[(q) % 4] >>> r ^ y[(q + 3) % 4] << s;
@@ -560,7 +554,7 @@ class ARIA {
         rk[offset + 3] = x[3] ^ y[(q + 3) % 4] >>> r ^ y[(q + 2) % 4] << s;
     }
 
-    private static final void diff(int[] i, int offset1, int[] o, int offset2) {
+    private static void diff(int[] i, int offset1, int[] o, int offset2) {
         int t0, t1, t2, t3;
 
         t0 = m(i[offset1]);
@@ -588,7 +582,7 @@ class ARIA {
         o[offset2 + 3] = t3;
     }
 
-    private static final void swapBlocks(int[] arr, int offset1, int offset2) {
+    private static void swapBlocks(int[] arr, int offset1, int offset2) {
         int t;
 
         for (int i = 0; i < 4; i++) {
@@ -598,7 +592,7 @@ class ARIA {
         }
     }
 
-    private static final void swapAndDiffuse(int[] arr, int offset1, int offset2, int[] tmp) {
+    private static void swapAndDiffuse(int[] arr, int offset1, int offset2, int[] tmp) {
         diff(arr, offset1, tmp, 0);
         diff(arr, offset2, arr, offset1);
         arr[offset2] = tmp[0];
@@ -662,14 +656,14 @@ class ARIA {
         }
     }
 
-    public static void ARIA_test() throws InvalidKeyException {
+    public static void test() throws InvalidKeyException {
         byte[] p = new byte[16];
         byte[] c = new byte[16];
         byte[] mk = new byte[32];
 
         boolean flag = false;
         PrintStream out = System.out;
-        ARIA instance = new ARIA(256);
+        Aria instance = new Aria(256);
 
         for (int i = 0; i < 32; i++)
             mk[i] = 0;
