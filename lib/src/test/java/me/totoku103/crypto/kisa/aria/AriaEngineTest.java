@@ -1,6 +1,6 @@
-package me.totoku103.crypto.improved.aria;
+package me.totoku103.crypto.kisa.aria;
 
-import me.totoku103.crypto.kisa.aria.ARIA;
+import me.totoku103.crypto.kisa.aria.Aria;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -25,12 +25,12 @@ class AriaEngineTest {
         final byte[] key = fromHex("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f");
         final byte[] plain = fromHex("00112233445566778899aabbccddeeff");
 
-        final ARIA original = new ARIA(256);
+        final Aria original = new Aria(256);
         original.setKey(key);
         original.setupRoundKeys();
         final byte[] expected = original.encrypt(plain, 0);
 
-        final AriaEngine engine = new AriaEngine(256);
+        final Aria engine = new Aria(256);
         engine.setKey(key);
         engine.setupRoundKeys();
         final byte[] actual = engine.encrypt(plain, 0);
