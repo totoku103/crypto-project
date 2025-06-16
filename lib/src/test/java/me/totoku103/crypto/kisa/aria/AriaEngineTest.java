@@ -11,8 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 class AriaEngineTest {
 
     @Test
-    @DisplayName("새 구현과 기존 구현 비교")
-    public void testEngineMatchesOriginal() throws InvalidKeyException {
+    @DisplayName("새로운 ARIA 엔진 구현이 기존 구현과 동일한 결과를 생성하는지 검증")
+    public void engineShouldMatchReferenceImplementation() throws InvalidKeyException {
         final byte[] key = ConvertUtils.fromHex("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f");
         final byte[] plain = ConvertUtils.fromHex("00112233445566778899aabbccddeeff");
 

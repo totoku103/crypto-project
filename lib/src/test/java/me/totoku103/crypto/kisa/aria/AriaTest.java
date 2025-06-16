@@ -17,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class AriaTest {
 
     @Test
-    @DisplayName("RFC5794 공식 벡터 검증")
-    public void testOfficialVectors() throws InvalidKeyException {
+    @DisplayName("RFC5794에 정의된 ARIA 공식 테스트 벡터로 암복호화가 올바르게 수행되는지 확인")
+    public void shouldMatchRfc5794OfficialVectors() throws InvalidKeyException {
         final String[][] vectors = {
                 {
                         "128",
@@ -89,8 +89,8 @@ class AriaTest {
 
     @ParameterizedTest(name = "[{index}] {0}-bit key – ECB round‑trip")
     @MethodSource("testVectors")
-    @DisplayName("ARIA official ECB test vectors encrypt/decrypt round‑trip")
-    void ecbVectorsShouldMatchSpec(int keySize, String keyHex, String ptHex, String ctHex) throws InvalidKeyException {
+    @DisplayName("ARIA 공식 ECB 테스트 벡터로 암호화 후 복호화하면 원문이 동일하게 복원되는지 검증")
+    void roundTripMatchesOfficialEcbVectors(int keySize, String keyHex, String ptHex, String ctHex) throws InvalidKeyException {
         Aria aria = new Aria(keySize);
         aria.setKey(ConvertUtils.fromHex(keyHex));
 

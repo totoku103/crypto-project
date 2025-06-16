@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class AriaCasesTest {
 
     @Test
-    @DisplayName("여러 키 길이에 대한 암복호 라운드트립")
-    void testRoundTrip() throws InvalidKeyException {
+    @DisplayName("128/192/256비트 키로 암호화 후 복호화하여 원문이 유지되는지 확인")
+    void roundTripShouldWorkForDifferentKeySizes() throws InvalidKeyException {
         final String[][] vectors = {
                 {"128", "000102030405060708090a0b0c0d0e0f", "00112233445566778899aabbccddeeff"},
                 {"192", "000102030405060708090a0b0c0d0e0f1011121314151617", "00112233445566778899aabbccddeeff"},
@@ -36,14 +36,14 @@ class AriaCasesTest {
     }
 
     @Test
-    @DisplayName("잘못된 키 사이즈 예외 확인")
-    void testInvalidKeySize() {
+    @DisplayName("지원하지 않는 키 길이를 사용하면 InvalidKeyException이 발생해야 한다")
+    void invalidKeySizeShouldThrowException() {
         assertThrows(InvalidKeyException.class, () -> new Aria(100));
     }
 
     @Test
-    @DisplayName("키 설정 없이 암호화 시 예외")
-    void testEncryptWithoutKey() throws InvalidKeyException {
+    @DisplayName("키를 설정하지 않고 암호화하면 InvalidKeyException이 발생해야 한다")
+    void encryptWithoutKeyShouldThrowException() throws InvalidKeyException {
         final Aria aria = new Aria(128);
         final byte[] plain = new byte[16];
         final byte[] out = new byte[16];
@@ -51,16 +51,16 @@ class AriaCasesTest {
     }
 
     @Test
-    @DisplayName("짧은 키 입력시 예외")
-    void testShortKey() throws InvalidKeyException {
+    @DisplayName("키 길이가 부족할 때 setKey가 InvalidKeyException을 발생해야 한다")
+    void shortKeyShouldThrowException() throws InvalidKeyException {
         final Aria aria = new Aria(256);
         final byte[] shortKey = new byte[16];
         assertThrows(InvalidKeyException.class, () -> aria.setKey(shortKey));
     }
 
     @Test
-    @DisplayName("reset 후 재사용 확인")
-    void testReuseAfterReset() throws InvalidKeyException {
+    @DisplayName("reset 호출 후 다른 키 길이를 설정해도 정상적으로 동작해야 한다")
+    void shouldReuseAfterReset() throws InvalidKeyException {
         final Aria aria = new Aria(128);
         final byte[] key1 = ConvertUtils.fromHex("000102030405060708090a0b0c0d0e0f");
         final byte[] plain = ConvertUtils.fromHex("00112233445566778899aabbccddeeff");
