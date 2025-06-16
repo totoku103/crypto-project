@@ -25,8 +25,8 @@ class Sha3Test {
     }
 
     @Test
-    @DisplayName("BitSizeType별 MessageDigest 인스턴스 생성 가능 여부 검증")
-    public void testMessageDigestInstanceCreationByBitSizeType() {
+    @DisplayName("모든 Sha3AlgorithmType에 대해 MessageDigest 인스턴스가 생성되는지 확인")
+    public void shouldCreateMessageDigestInstancesForAllBitSizes() {
         Assumptions.assumeTrue(Sha3.isSha3Available(Sha3AlgorithmType.SHA3_224));
 
         Arrays.asList(Sha3AlgorithmType.values())
@@ -42,8 +42,8 @@ class Sha3Test {
     }
 
     @Test
-    @DisplayName("한글 입력 SHA3-512(최적화, 지원 시 실행)")
-    public void testOptimizedKorean512() {
+    @DisplayName("지원되는 경우 최적화된 SHA3-512 구현으로 한글 문자열을 해싱하여 예상 값과 비교")
+    public void shouldHashKoreanTextWithOptimizedSha3512() {
         Assumptions.assumeTrue(Sha3.isSha3Available(Sha3AlgorithmType.SHA3_512));
 
         final me.totoku103.crypto.java.sha3.Sha3 javaSha3 = new me.totoku103.crypto.java.sha3.Sha3();
@@ -56,8 +56,8 @@ class Sha3Test {
     }
 
     @Test
-    @DisplayName("이모지 입력 비교 (최적화 지원 시 실행)")
-    public void testUnicodeOptimizedMatchesOriginal() {
+    @DisplayName("이모지 문자열을 사용해 최적화 구현과 기본 구현의 SHA3-256 결과가 동일한지 확인")
+    public void optimizedSha3256ShouldMatchOriginalForEmoji() {
         Assumptions.assumeTrue(Sha3.isSha3Available(Sha3AlgorithmType.SHA3_256));
 
         final me.totoku103.crypto.kisa.sha3.Sha3 kisaSha3 = new me.totoku103.crypto.kisa.sha3.Sha3();
@@ -73,8 +73,8 @@ class Sha3Test {
     }
 
     @Test
-    @DisplayName("모든 비트 크기 일치 테스트 (최적화 지원 시 실행)")
-    public void testAllBitSizesMatch() {
+    @DisplayName("최적화 구현이 모든 비트 크기에서 참조 구현과 동일한 해시를 생성하는지 검증")
+    public void optimizedAndReferenceMatchForAllBitSizes() {
         Assumptions.assumeTrue(Sha3.isSha3Available(Sha3AlgorithmType.SHA3_256));
 
         final me.totoku103.crypto.kisa.sha3.Sha3 kisaSha3 = new me.totoku103.crypto.kisa.sha3.Sha3();
@@ -93,8 +93,8 @@ class Sha3Test {
     }
 
     @Test
-    @DisplayName("최적화 버전 결과 비교 (SHA3-256 지원 시에만 실행)")
-    public void testKISAMatchesJava() {
+    @DisplayName("최적화된 SHA3-256 결과가 KISA 구현과 완전히 일치하는지 검증")
+    public void optimizedSha3256MatchesKisaImplementation() {
         Assumptions.assumeTrue(Sha3.isSha3Available(Sha3AlgorithmType.SHA3_256));
 
         final me.totoku103.crypto.kisa.sha3.Sha3 kisaSha3 = new me.totoku103.crypto.kisa.sha3.Sha3();

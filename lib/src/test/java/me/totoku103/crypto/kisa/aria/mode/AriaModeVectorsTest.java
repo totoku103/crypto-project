@@ -91,8 +91,8 @@ public class AriaModeVectorsTest {
     private static final byte[] CT_CTR = ConvertUtils.fromHex("3720e53ba7d615383406b09f0a05a2001673032f1d03d982e5671311789b6f4ab461748f2f56718727d7a084f1499d101c9e2d05a74a5eeb00c27c811490ae5381e9e3b57b24a361adfd3706cd39c265bdbfb65d1c84ef37e4f6b8b58ac6dd628ae47c6115c6a581fb66706735080b4c336190a6e1e0d43e79ee0dad09faa9270dc680c2197f4cd164f9e92985dbcab8df1eefc2069f96c1825fe5fd561f0d20");
 
     @Test
-    @DisplayName("ECB vector")
-    void ecbVector() {
+    @DisplayName("ECB 모드 공식 테스트 벡터와 일치하는지 검증")
+    void ecbVectorShouldMatchReference() {
         BlockCipher engine = new AriaBcBlockCipher();
         engine.init(true, new KeyParameter(KEY));
         byte[] out = new byte[PLAINTEXT.length];
@@ -110,8 +110,8 @@ public class AriaModeVectorsTest {
     }
 
     @Test
-    @DisplayName("CBC vector")
-    void cbcVector() {
+    @DisplayName("CBC 모드 공식 테스트 벡터와 일치하는지 검증")
+    void cbcVectorShouldMatchReference() {
         byte[] cipher = AriaModes.encryptCbc(KEY, IV, PLAINTEXT);
         assertArrayEquals(CT_CBC, cipher);
         byte[] plain = AriaModes.decryptCbc(KEY, IV, cipher);
@@ -119,8 +119,8 @@ public class AriaModeVectorsTest {
     }
 
     @Test
-    @DisplayName("CFB-128 vector")
-    void cfb128Vector() {
+    @DisplayName("CFB-128 모드 테스트 벡터와 결과가 동일해야 한다")
+    void cfb128VectorShouldMatchReference() {
         byte[] cipher = AriaModes.encryptCfb(KEY, IV, PLAINTEXT, 128);
         assertArrayEquals(CT_CFB128, cipher);
         byte[] plain = AriaModes.decryptCfb(KEY, IV, cipher, 128);
@@ -128,8 +128,8 @@ public class AriaModeVectorsTest {
     }
 
     @Test
-    @DisplayName("CFB-64 vector")
-    void cfb64Vector() {
+    @DisplayName("CFB-64 모드 테스트 벡터와 결과가 동일해야 한다")
+    void cfb64VectorShouldMatchReference() {
         byte[] cipher = AriaModes.encryptCfb(KEY, IV, PLAINTEXT, 64);
         assertArrayEquals(CT_CFB64, cipher);
         byte[] plain = AriaModes.decryptCfb(KEY, IV, cipher, 64);
@@ -137,8 +137,8 @@ public class AriaModeVectorsTest {
     }
 
     @Test
-    @DisplayName("CFB-16 vector")
-    void cfb16Vector() {
+    @DisplayName("CFB-16 모드 테스트 벡터와 결과가 동일해야 한다")
+    void cfb16VectorShouldMatchReference() {
         byte[] cipher = AriaModes.encryptCfb(KEY, IV, PLAINTEXT, 16);
         assertArrayEquals(CT_CFB16, cipher);
         byte[] plain = AriaModes.decryptCfb(KEY, IV, cipher, 16);
@@ -146,8 +146,8 @@ public class AriaModeVectorsTest {
     }
 
     @Test
-    @DisplayName("CFB-8 vector")
-    void cfb8Vector() {
+    @DisplayName("CFB-8 모드 테스트 벡터와 결과가 동일해야 한다")
+    void cfb8VectorShouldMatchReference() {
         byte[] cipher = AriaModes.encryptCfb(KEY, IV, PLAINTEXT, 8);
         assertArrayEquals(CT_CFB8, cipher);
         byte[] plain = AriaModes.decryptCfb(KEY, IV, cipher, 8);
@@ -155,8 +155,8 @@ public class AriaModeVectorsTest {
     }
 
     @Test
-    @DisplayName("OFB-128 vector")
-    void ofb128Vector() {
+    @DisplayName("OFB-128 모드 테스트 벡터와 결과가 동일해야 한다")
+    void ofb128VectorShouldMatchReference() {
         byte[] cipher = AriaModes.processOfb(KEY, IV, PLAINTEXT, 128);
         assertArrayEquals(CT_OFB128, cipher);
         byte[] plain = AriaModes.processOfb(KEY, IV, cipher, 128);
@@ -164,8 +164,8 @@ public class AriaModeVectorsTest {
     }
 
     @Test
-    @DisplayName("OFB-64 vector")
-    void ofb64Vector() {
+    @DisplayName("OFB-64 모드 테스트 벡터와 결과가 동일해야 한다")
+    void ofb64VectorShouldMatchReference() {
         byte[] cipher = AriaModes.processOfb(KEY, IV, PLAINTEXT, 64);
         assertArrayEquals(CT_OFB64, cipher);
         byte[] plain = AriaModes.processOfb(KEY, IV, cipher, 64);
@@ -173,8 +173,8 @@ public class AriaModeVectorsTest {
     }
 
     @Test
-    @DisplayName("OFB-16 vector")
-    void ofb16Vector() {
+    @DisplayName("OFB-16 모드 테스트 벡터와 결과가 동일해야 한다")
+    void ofb16VectorShouldMatchReference() {
         byte[] cipher = AriaModes.processOfb(KEY, IV, PLAINTEXT, 16);
         assertArrayEquals(CT_OFB16, cipher);
         byte[] plain = AriaModes.processOfb(KEY, IV, cipher, 16);
@@ -182,8 +182,8 @@ public class AriaModeVectorsTest {
     }
 
     @Test
-    @DisplayName("OFB-8 vector")
-    void ofb8Vector() {
+    @DisplayName("OFB-8 모드 테스트 벡터와 결과가 동일해야 한다")
+    void ofb8VectorShouldMatchReference() {
         byte[] cipher = AriaModes.processOfb(KEY, IV, PLAINTEXT, 8);
         assertArrayEquals(CT_OFB8, cipher);
         byte[] plain = AriaModes.processOfb(KEY, IV, cipher, 8);
@@ -191,8 +191,8 @@ public class AriaModeVectorsTest {
     }
 
     @Test
-    @DisplayName("CTR vector")
-    void ctrVector() {
+    @DisplayName("CTR 모드 테스트 벡터와 결과가 동일해야 한다")
+    void ctrVectorShouldMatchReference() {
         byte[] cipher = AriaModes.processCtr(KEY, IV, PLAINTEXT);
         assertArrayEquals(CT_CTR, cipher);
         byte[] plain = AriaModes.processCtr(KEY, IV, cipher);

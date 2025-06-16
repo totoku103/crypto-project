@@ -19,8 +19,8 @@ public class Sha3Test {
     }
 
     @Test
-    @DisplayName("SHA3-256 벡터 테스트")
-    public void testSha3256Vector() {
+    @DisplayName("공식 테스트 벡터를 사용한 SHA3-256 해시 검증")
+    public void shouldMatchSha3256TestVector() {
         final Sha3 hasher = new Sha3();
         final byte[] input = "abc".getBytes(StandardCharsets.UTF_8);
         final byte[] out = new byte[32];
@@ -31,8 +31,8 @@ public class Sha3Test {
     }
 
     @Test
-    @DisplayName("한글 입력 SHA3-256")
-    public void testKoreanVector256() {
+    @DisplayName("한글 문자열을 SHA3-256으로 해싱하여 예상 값과 일치하는지 확인")
+    public void shouldHashKoreanTextSha3256() {
         final Sha3 hasher = new Sha3();
         final byte[] input = "안녕하세요".getBytes(StandardCharsets.UTF_8);
         final byte[] out = new byte[32];

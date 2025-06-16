@@ -41,8 +41,8 @@ public class AriaCbcTest {
 
     @ParameterizedTest(name = "[{index}] {0}-bit key – CBC mode with fixed IV")
     @MethodSource("cbcTestVectors")
-    @DisplayName("ARIA CBC mode encryption/decryption with fixed IV")
-    void testCbcWithFixedIv(int keySize, String keyHex, String ptHex, String ctHex) throws InvalidKeyException {
+    @DisplayName("고정된 IV를 사용한 CBC 모드 암복호화가 테스트 벡터와 일치하는지 확인")
+    void cbcWithFixedIvShouldMatchVectors(int keySize, String keyHex, String ptHex, String ctHex) throws InvalidKeyException {
         byte[] key = ConvertUtils.fromHex(keyHex);
         byte[] plain = ConvertUtils.fromHex(ptHex);
         byte[] expected = ConvertUtils.fromHex(ctHex);
