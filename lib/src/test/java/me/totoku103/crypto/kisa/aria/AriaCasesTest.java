@@ -5,18 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import java.security.InvalidKeyException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AriaCasesTest {
-    // 16진수 문자열을 바이트 배열로 변환
-    private static byte[] fromHex(final String hex) {
-        final int len = hex.length();
-        final byte[] out = new byte[len / 2];
-        for (int i = 0; i < out.length; i++) {
-            out[i] = (byte) Integer.parseInt(hex.substring(2 * i, 2 * i + 2), 16);
-        }
-        return out;
-    }
 
     @Test
     @DisplayName("여러 키 길이에 대한 암복호 라운드트립")
@@ -29,8 +21,8 @@ class AriaCasesTest {
 
         for (String[] v : vectors) {
             final int keySize = Integer.parseInt(v[0]);
-            final byte[] key = fromHex(v[1]);
-            final byte[] plain = fromHex(v[2]);
+            final byte[] key = Aria.fromHex(v[1]);
+            final byte[] plain = Aria.fromHex(v[2]);
 
             final Aria aria = new Aria(keySize);
             aria.setKey(key);
@@ -69,8 +61,8 @@ class AriaCasesTest {
     @DisplayName("reset 후 재사용 확인")
     void testReuseAfterReset() throws InvalidKeyException {
         final Aria aria = new Aria(128);
-        final byte[] key1 = fromHex("000102030405060708090a0b0c0d0e0f");
-        final byte[] plain = fromHex("00112233445566778899aabbccddeeff");
+        final byte[] key1 = Aria.fromHex("000102030405060708090a0b0c0d0e0f");
+        final byte[] plain = Aria.fromHex("00112233445566778899aabbccddeeff");
         aria.setKey(key1);
         aria.setupRoundKeys();
         final byte[] enc1 = aria.encrypt(plain, 0);
@@ -78,7 +70,7 @@ class AriaCasesTest {
 
         aria.reset();
         aria.setKeySize(192);
-        final byte[] key2 = fromHex("000102030405060708090a0b0c0d0e0f1011121314151617");
+        final byte[] key2 = Aria.fromHex("000102030405060708090a0b0c0d0e0f1011121314151617");
         aria.setKey(key2);
         aria.setupRoundKeys();
         final byte[] enc2 = aria.encrypt(plain, 0);

@@ -2,31 +2,18 @@ package me.totoku103.crypto.kisa.aria;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.security.InvalidKeyException;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AriaTest {
-    // 16진수 문자열을 바이트 배열로 변환
-    private static byte[] fromHex(final String hex) {
-        final int len = hex.length();
-        final byte[] out = new byte[len / 2];
-        for (int i = 0; i < out.length; i++) {
-            out[i] = (byte) Integer.parseInt(hex.substring(2 * i, 2 * i + 2), 16);
-        }
-        return out;
-    }
-
-    // 바이트 배열을 16진수 문자열로 변환
-    private static String toHex(final byte[] data) {
-        final StringBuilder sb = new StringBuilder();
-        for (final byte b : data) {
-            sb.append(String.format("%02x", b));
-        }
-        return sb.toString();
-    }
 
     @Test
     @DisplayName("RFC5794 공식 벡터 검증")
@@ -54,18 +41,65 @@ class AriaTest {
 
         for (String[] v : vectors) {
             final int keySize = Integer.parseInt(v[0]);
-            final byte[] key = fromHex(v[1]);
-            final byte[] plain = fromHex(v[2]);
-            final byte[] expected = fromHex(v[3]);
+            final byte[] key = Aria.fromHex(v[1]);
+            final byte[] plain = Aria.fromHex(v[2]);
+            final byte[] expected = Aria.fromHex(v[3]);
 
             final Aria aria = new Aria(keySize);
             aria.setKey(key);
             aria.setupRoundKeys();
             final byte[] enc = aria.encrypt(plain, 0);
-            assertEquals(toHex(expected), toHex(enc));
+            assertEquals(Aria.toHex(expected), Aria.toHex(enc));
 
             final byte[] dec = aria.decrypt(enc, 0);
             assertArrayEquals(plain, dec);
         }
+    }
+
+    /**
+     * Official ARIA ECB test vectors (key, plaintext, ciphertext).
+     * Source: “ARIA test vectors” (KISA).
+     */
+    private static Stream<Arguments> testVectors() {
+        return Stream.of(
+                // 128‑bit key
+                Arguments.of(
+                        128,
+                        "00112233445566778899aabbccddeeff",
+                        "11111111aaaaaaaa11111111bbbbbbbb",
+                        "c6ecd08e22c30abdb215cf74e2075e6e"
+                ),
+                // 192‑bit key
+                Arguments.of(
+                        192,
+                        "00112233445566778899aabbccddeeff0011223344556677",
+                        "11111111aaaaaaaa11111111bbbbbbbb",
+                        "8d1470625f59ebacb0e55b534b3e462b"
+                ),
+                // 256‑bit key
+                Arguments.of(
+                        256,
+                        "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
+                        "11111111aaaaaaaa11111111bbbbbbbb",
+                        "58a875e6044ad7fffa4f58420f7f442d"
+                )
+        );
+    }
+
+    @ParameterizedTest(name = "[{index}] {0}-bit key – ECB round‑trip")
+    @MethodSource("testVectors")
+    @DisplayName("ARIA official ECB test vectors encrypt/decrypt round‑trip")
+    void ecbVectorsShouldMatchSpec(int keySize, String keyHex, String ptHex, String ctHex) throws InvalidKeyException {
+        Aria aria = new Aria(keySize);
+        aria.setKey(Aria.fromHex(keyHex));
+
+        byte[] plaintext = Aria.fromHex(ptHex);
+        byte[] expectedCipher = Aria.fromHex(ctHex);
+
+        byte[] actualCipher = aria.encrypt(plaintext, 0);
+        assertArrayEquals(expectedCipher, actualCipher, "Ciphertext does not match specification");
+
+        byte[] roundTripPlain = aria.decrypt(actualCipher, 0);
+        assertArrayEquals(plaintext, roundTripPlain, "Decryption failed to recover original plaintext");
     }
 }
