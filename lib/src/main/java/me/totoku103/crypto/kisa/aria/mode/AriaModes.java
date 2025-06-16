@@ -19,6 +19,15 @@ public final class AriaModes {
     private static final Logger log = Logger.getLogger(AriaModes.class.getName());
     private AriaModes() {}
 
+    private static byte[] processBlocks(BlockCipher cipher, byte[] input) {
+        int blockSize = cipher.getBlockSize();
+        byte[] out = new byte[input.length];
+        for (int i = 0; i < input.length; i += blockSize) {
+            cipher.processBlock(input, i, out, i);
+        }
+        return out;
+    }
+
     public static byte[] encryptCbc(byte[] key, byte[] iv, byte[] plaintext) {
         log.fine("encrypt CBC");
         BlockCipher engine = new AriaBcBlockCipher();
