@@ -22,19 +22,19 @@ public class AriaCbcTest {
                         128,
                         "00112233445566778899aabbccddeeff",
                         "11111111aaaaaaaa11111111bbbbbbbb",
-                        "18eec44c6d8318b2e72677dbeb58ff76"
+                        "49d61860b14909109cef0d22a9268134"
                 ),
                 Arguments.of(
                         192,
                         "00112233445566778899aabbccddeeff0011223344556677",
                         "11111111aaaaaaaa11111111bbbbbbbb",
-                        "b36554307dba72b1c8edc1854e34d3a2"
+                        "afe6cf23974b533c672a826264ea785f"
                 ),
                 Arguments.of(
                         256,
                         "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
                         "11111111aaaaaaaa11111111bbbbbbbb",
-                        "f1d5a826a11b230ad6df7a1701fa9f3c"
+                        "523a8a806ae621f155fdd28dbc34e1ab"
                 )
         );
     }
@@ -43,6 +43,14 @@ public class AriaCbcTest {
     @MethodSource("cbcTestVectors")
     @DisplayName("ARIA CBC mode encryption/decryption with fixed IV")
     void testCbcWithFixedIv(int keySize, String keyHex, String ptHex, String ctHex) throws InvalidKeyException {
+        byte[] key = ConvertUtils.fromHex(keyHex);
+        byte[] plain = ConvertUtils.fromHex(ptHex);
+        byte[] expected = ConvertUtils.fromHex(ctHex);
 
+        byte[] cipher = AriaModes.encryptCbc(key, IV, plain);
+        assertArrayEquals(expected, cipher);
+
+        byte[] dec = AriaModes.decryptCbc(key, IV, cipher);
+        assertArrayEquals(plain, dec);
     }
 }
