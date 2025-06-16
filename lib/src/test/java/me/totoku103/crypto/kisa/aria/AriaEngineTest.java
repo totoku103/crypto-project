@@ -1,5 +1,6 @@
 package me.totoku103.crypto.kisa.aria;
 
+import me.totoku103.crypto.utils.ConvertUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +13,8 @@ class AriaEngineTest {
     @Test
     @DisplayName("새 구현과 기존 구현 비교")
     public void testEngineMatchesOriginal() throws InvalidKeyException {
-        final byte[] key = Aria.fromHex("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f");
-        final byte[] plain = Aria.fromHex("00112233445566778899aabbccddeeff");
+        final byte[] key = ConvertUtils.fromHex("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f");
+        final byte[] plain = ConvertUtils.fromHex("00112233445566778899aabbccddeeff");
 
         final Aria original = new Aria(256);
         original.setKey(key);

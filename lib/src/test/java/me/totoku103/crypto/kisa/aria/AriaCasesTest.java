@@ -1,5 +1,6 @@
 package me.totoku103.crypto.kisa.aria;
 
+import me.totoku103.crypto.utils.ConvertUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +22,8 @@ class AriaCasesTest {
 
         for (String[] v : vectors) {
             final int keySize = Integer.parseInt(v[0]);
-            final byte[] key = Aria.fromHex(v[1]);
-            final byte[] plain = Aria.fromHex(v[2]);
+            final byte[] key = ConvertUtils.fromHex(v[1]);
+            final byte[] plain = ConvertUtils.fromHex(v[2]);
 
             final Aria aria = new Aria(keySize);
             aria.setKey(key);
@@ -61,8 +62,8 @@ class AriaCasesTest {
     @DisplayName("reset 후 재사용 확인")
     void testReuseAfterReset() throws InvalidKeyException {
         final Aria aria = new Aria(128);
-        final byte[] key1 = Aria.fromHex("000102030405060708090a0b0c0d0e0f");
-        final byte[] plain = Aria.fromHex("00112233445566778899aabbccddeeff");
+        final byte[] key1 = ConvertUtils.fromHex("000102030405060708090a0b0c0d0e0f");
+        final byte[] plain = ConvertUtils.fromHex("00112233445566778899aabbccddeeff");
         aria.setKey(key1);
         aria.setupRoundKeys();
         final byte[] enc1 = aria.encrypt(plain, 0);
@@ -70,7 +71,7 @@ class AriaCasesTest {
 
         aria.reset();
         aria.setKeySize(192);
-        final byte[] key2 = Aria.fromHex("000102030405060708090a0b0c0d0e0f1011121314151617");
+        final byte[] key2 = ConvertUtils.fromHex("000102030405060708090a0b0c0d0e0f1011121314151617");
         aria.setKey(key2);
         aria.setupRoundKeys();
         final byte[] enc2 = aria.encrypt(plain, 0);

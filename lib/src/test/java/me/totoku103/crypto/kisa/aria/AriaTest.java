@@ -1,5 +1,6 @@
 package me.totoku103.crypto.kisa.aria;
 
+import me.totoku103.crypto.utils.ConvertUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,15 +42,15 @@ class AriaTest {
 
         for (String[] v : vectors) {
             final int keySize = Integer.parseInt(v[0]);
-            final byte[] key = Aria.fromHex(v[1]);
-            final byte[] plain = Aria.fromHex(v[2]);
-            final byte[] expected = Aria.fromHex(v[3]);
+            final byte[] key = ConvertUtils.fromHex(v[1]);
+            final byte[] plain = ConvertUtils.fromHex(v[2]);
+            final byte[] expected = ConvertUtils.fromHex(v[3]);
 
             final Aria aria = new Aria(keySize);
             aria.setKey(key);
             aria.setupRoundKeys();
             final byte[] enc = aria.encrypt(plain, 0);
-            assertEquals(Aria.toHex(expected), Aria.toHex(enc));
+            assertEquals(ConvertUtils.toHex(expected), ConvertUtils.toHex(enc));
 
             final byte[] dec = aria.decrypt(enc, 0);
             assertArrayEquals(plain, dec);
@@ -91,10 +92,10 @@ class AriaTest {
     @DisplayName("ARIA official ECB test vectors encrypt/decrypt round‑trip")
     void ecbVectorsShouldMatchSpec(int keySize, String keyHex, String ptHex, String ctHex) throws InvalidKeyException {
         Aria aria = new Aria(keySize);
-        aria.setKey(Aria.fromHex(keyHex));
+        aria.setKey(ConvertUtils.fromHex(keyHex));
 
-        byte[] plaintext = Aria.fromHex(ptHex);
-        byte[] expectedCipher = Aria.fromHex(ctHex);
+        byte[] plaintext = ConvertUtils.fromHex(ptHex);
+        byte[] expectedCipher = ConvertUtils.fromHex(ctHex);
 
         byte[] actualCipher = aria.encrypt(plaintext, 0);
         assertArrayEquals(expectedCipher, actualCipher, "Ciphertext does not match specification");
