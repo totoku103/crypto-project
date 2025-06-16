@@ -1,11 +1,17 @@
 package me.totoku103.crypto.kisa.aria.mode;
 
 import me.totoku103.crypto.kisa.aria.AriaBcBlockCipher;
+import me.totoku103.crypto.utils.PaddingUtils;
 import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.params.KeyParameter;
 import me.totoku103.crypto.utils.ConvertUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
@@ -14,73 +20,73 @@ public class AriaModeVectorsTest {
     private static final byte[] IV = ConvertUtils.fromHex("0f1e2d3c4b5a69788796a5b4c3d2e1f0");
     private static final byte[] PLAINTEXT = ConvertUtils.fromHex(
             "11111111aaaaaaaa11111111bbbbbbbb"
-            + "11111111cccccccc11111111dddddddd"
-            + "22222222aaaaaaaa22222222bbbbbbbb"
-            + "22222222cccccccc22222222dddddddd"
-            + "33333333aaaaaaaa33333333bbbbbbbb"
-            + "33333333cccccccc33333333dddddddd"
-            + "44444444aaaaaaaa44444444bbbbbbbb"
-            + "44444444cccccccc44444444dddddddd"
-            + "55555555aaaaaaaa55555555bbbbbbbb"
-            + "55555555cccccccc55555555dddddddd");
+                    + "11111111cccccccc11111111dddddddd"
+                    + "22222222aaaaaaaa22222222bbbbbbbb"
+                    + "22222222cccccccc22222222dddddddd"
+                    + "33333333aaaaaaaa33333333bbbbbbbb"
+                    + "33333333cccccccc33333333dddddddd"
+                    + "44444444aaaaaaaa44444444bbbbbbbb"
+                    + "44444444cccccccc44444444dddddddd"
+                    + "55555555aaaaaaaa55555555bbbbbbbb"
+                    + "55555555cccccccc55555555dddddddd");
 
     private static final byte[] CT_ECB = ConvertUtils.fromHex(
             "c6ecd08e22c30abdb215cf74e2075e6e"
-            + "29ccaac63448708d331b2f816c51b17d"
-            + "9e133d1528dbf0af5787c7f3a3f5c2bf"
-            + "6b6f345907a3055612ce072ff54de7d7"
-            + "88424da6e8ccfe8172b391be49935416"
-            + "5665ba7864917000a6eeb2ecb4a698ed"
-            + "fc7887e7f556377614ab0a282293e6d8"
-            + "84dbb84206cdb16ed1754e77a1f243fd"
-            + "086953f752cc1e46c7c794ae85537dca"
-            + "ec8dd721f55c93b6edfe2adea43873e8");
+                    + "29ccaac63448708d331b2f816c51b17d"
+                    + "9e133d1528dbf0af5787c7f3a3f5c2bf"
+                    + "6b6f345907a3055612ce072ff54de7d7"
+                    + "88424da6e8ccfe8172b391be49935416"
+                    + "5665ba7864917000a6eeb2ecb4a698ed"
+                    + "fc7887e7f556377614ab0a282293e6d8"
+                    + "84dbb84206cdb16ed1754e77a1f243fd"
+                    + "086953f752cc1e46c7c794ae85537dca"
+                    + "ec8dd721f55c93b6edfe2adea43873e8");
 
     private static final byte[] CT_CBC = ConvertUtils.fromHex(
             "49d61860b14909109cef0d22a9268134"
-            + "fadf9fb23151e9645fba75018bdb1538"
-            + "b53334634bbf7d4cd4b5377033060c15"
-            + "5fe3948ca75de1031e1d85619e0ad61e"
-            + "b419a866b3c2dbfd10a4ed18b22149f7"
-            + "5897f0b8668b0c1c542c687778835fb7"
-            + "cd46e45f85eaa7072437dd9fa6793d6f"
-            + "8d4ccefc4eb1ac641ac1bd30b18c6d64"
-            + "c49bca137eb21c2e04da62712ca2b4f5"
-            + "40c57112c38791852cfac7a5d19ed83a");
+                    + "fadf9fb23151e9645fba75018bdb1538"
+                    + "b53334634bbf7d4cd4b5377033060c15"
+                    + "5fe3948ca75de1031e1d85619e0ad61e"
+                    + "b419a866b3c2dbfd10a4ed18b22149f7"
+                    + "5897f0b8668b0c1c542c687778835fb7"
+                    + "cd46e45f85eaa7072437dd9fa6793d6f"
+                    + "8d4ccefc4eb1ac641ac1bd30b18c6d64"
+                    + "c49bca137eb21c2e04da62712ca2b4f5"
+                    + "40c57112c38791852cfac7a5d19ed83a");
 
     private static final byte[] CT_CFB128 = ConvertUtils.fromHex(
             "3720e53ba7d615383406b09f0a05a200c07c21e6370f413a5d132500a6828501"
-            + "7c61b434c7b7ca9685a51071861e4d4bb873b599b479e2d573dddeafba89f812"
-            + "ac6a9e44d554078eb3be94839db4b33da3f59c063123a7ef6f20e10579fa4fd2"
-            + "39100ca73b52d4fcafeadee73f139f78f9b7614c2b3b9dbe010f87db06a89a94"
-            + "35f79ce8121431371f4e87b984e0230c22a6dacb32fc42dcc6accef33285bf11");
+                    + "7c61b434c7b7ca9685a51071861e4d4bb873b599b479e2d573dddeafba89f812"
+                    + "ac6a9e44d554078eb3be94839db4b33da3f59c063123a7ef6f20e10579fa4fd2"
+                    + "39100ca73b52d4fcafeadee73f139f78f9b7614c2b3b9dbe010f87db06a89a94"
+                    + "35f79ce8121431371f4e87b984e0230c22a6dacb32fc42dcc6accef33285bf11");
 
-    private static final byte[] CT_CFB64 = ConvertUtils.fromHex("3720e53ba7d61538595743814e943acc821a056e3c5fdb10eeaed5e2de03e5bb" 
-            + "60f528f9bad9a267e98da2237054ef9060564ec489a19533ab0fad70fe044b43" 
-            + "a3c0579da9def9a26e428dbdac645ebfaa94bce08852cd1f3538d57ea3fa9f1a" 
-            + "3723846f2287627c94b15a06136b6683504c9860e2ad9de7d96f310083a4aa25" 
+    private static final byte[] CT_CFB64 = ConvertUtils.fromHex("3720e53ba7d61538595743814e943acc821a056e3c5fdb10eeaed5e2de03e5bb"
+            + "60f528f9bad9a267e98da2237054ef9060564ec489a19533ab0fad70fe044b43"
+            + "a3c0579da9def9a26e428dbdac645ebfaa94bce08852cd1f3538d57ea3fa9f1a"
+            + "3723846f2287627c94b15a06136b6683504c9860e2ad9de7d96f310083a4aa25"
             + "10f2f67b04fea774801cae4f0d0a6bad467b6c3a90e019a7c67ad24493bbdf46");
 
     private static final byte[] CT_CFB16 = ConvertUtils.fromHex(
             "37203a2ac0bff752e4bab589f4ad3ea82277a6ff4b5841ad92f4b8e5d1aa6e8"
-            + "a95bfde0ad6ec9f7cc711e4f67212d0afe92497463054becd398e26ee39388be"
-            + "725fa38c33ad07cfada2be83a770a034e969b29b9c6d3523e148d0695f2338f9"
-            + "5ff2ec01ab69fcf8f9c77fcb71691ceb830fd166d05deddb2dba6a38eff5bf14"
-            + "2b1abfb0fe8b520f3a691a8a4f87e24a6e857beca437e66abcc4a5bf43d6d6bfe");
+                    + "a95bfde0ad6ec9f7cc711e4f67212d0afe92497463054becd398e26ee39388be"
+                    + "725fa38c33ad07cfada2be83a770a034e969b29b9c6d3523e148d0695f2338f9"
+                    + "5ff2ec01ab69fcf8f9c77fcb71691ceb830fd166d05deddb2dba6a38eff5bf14"
+                    + "2b1abfb0fe8b520f3a691a8a4f87e24a6e857beca437e66abcc4a5bf43d6d6bfe");
 
     private static final byte[] CT_CFB8 = ConvertUtils.fromHex(
             "373c8f6a965599ec785cc8f8149f6c81b632ccb8e0c6eb6a9707ae52c59257a4"
-            + "1f94701c1096933127a90195ed0c8e98690547572423bb45c3d70e4a18ee56b9"
-            + "67c10e000ba4df5fba7c404134a343d8375d04b151d161ef83417fe1748447d3"
-            + "0a6723c406733df7d18aa39a20752d2381942e244811bb97f72eae446b1815aa"
-            + "690cd1b1adcbd007c0088ecdc91cb2e2caf0e11e72459878137eea64ac62a9a1");
+                    + "1f94701c1096933127a90195ed0c8e98690547572423bb45c3d70e4a18ee56b9"
+                    + "67c10e000ba4df5fba7c404134a343d8375d04b151d161ef83417fe1748447d3"
+                    + "0a6723c406733df7d18aa39a20752d2381942e244811bb97f72eae446b1815aa"
+                    + "690cd1b1adcbd007c0088ecdc91cb2e2caf0e11e72459878137eea64ac62a9a1");
 
     private static final byte[] CT_OFB128 = ConvertUtils.fromHex(
             "3720e53ba7d615383406b09f0a05a2000063063f0560083483faeb041c8adece"
-            + "f30cf80cefb002a0d280759168ec01db3d49f61aced260bd43eec0a2731730ee"
-            + "c6fa4f2304319cf8ccac2d7be7833e4f8ae6ce967012c1c6badc5d28e7e4144f"
-            + "6bf5cebe01253ee202afce4bc61f28dec069a6f16f6c8a7dd2afae44148f6ff4"
-            + "d0029d5c607b5fa6b8c8a6301cde5c7033565cd0b8f0974ab490b236197ba04a");
+                    + "f30cf80cefb002a0d280759168ec01db3d49f61aced260bd43eec0a2731730ee"
+                    + "c6fa4f2304319cf8ccac2d7be7833e4f8ae6ce967012c1c6badc5d28e7e4144f"
+                    + "6bf5cebe01253ee202afce4bc61f28dec069a6f16f6c8a7dd2afae44148f6ff4"
+                    + "d0029d5c607b5fa6b8c8a6301cde5c7033565cd0b8f0974ab490b236197ba04a");
 
     private static final byte[] CT_OFB64 = ConvertUtils.fromHex("3720e53ba7d615388cef8367cafc4c789bd7112f72e158784c5e3489035cbb7f3c6c02d2e3cd0af54c42241d8d57aceeeac6c1af1505bb2576f373794e4040345b6e4ab275f7a9539fc47544f0c804a86625cb846c88df0595d410328bef4463555d7d8b97e0f73f9af61b834d9937b330901a1639df1d4514b55829d878b81f7cacd832ff8027a44864f2e3e937427f9adb8675e9cb9f01a47eb94732669f1d");
 
@@ -197,5 +203,19 @@ public class AriaModeVectorsTest {
         assertArrayEquals(CT_CTR, cipher);
         byte[] plain = AriaModes.processCtr(KEY, IV, cipher);
         assertArrayEquals(PLAINTEXT, plain);
+    }
+
+    @Test
+    @DisplayName("단순 CBC 암호화 테스트")
+    void simpleTestEncryptCbc() {
+        final String plainText = "plainText wow 감자의 잎이 나서 싹이나서 묵지빠";
+        final byte[] plainTextBytes = plainText.getBytes();
+        final byte[] padded = PaddingUtils.addPadding(plainTextBytes);
+        final byte[] encryptBytes = AriaModes.encryptCbc(KEY, IV, padded);
+
+        final byte[] decryptBytes = AriaModes.decryptCbc(KEY, IV, encryptBytes);
+        final byte[] unpadded = PaddingUtils.removePadding(decryptBytes);
+        final String decryptPlainText = new String(unpadded);
+        Assertions.assertEquals(plainText, decryptPlainText);
     }
 }
