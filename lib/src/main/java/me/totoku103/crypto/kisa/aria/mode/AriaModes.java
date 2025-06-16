@@ -76,8 +76,12 @@ public final class AriaModes {
     }
 
     public static byte[] encryptCfb(byte[] key, byte[] iv, byte[] plaintext) {
+        return encryptCfb(key, iv, plaintext, iv.length * 8);
+    }
+
+    public static byte[] encryptCfb(byte[] key, byte[] iv, byte[] plaintext, int segmentBits) {
         BlockCipher engine = new AriaBcBlockCipher();
-        CFBBlockCipher cfb = new CFBBlockCipher(engine, iv.length * 8);
+        CFBBlockCipher cfb = new CFBBlockCipher(engine, segmentBits);
         cfb.init(true, new ParametersWithIV(new KeyParameter(key), iv));
         byte[] out = new byte[plaintext.length];
         cfb.processBytes(plaintext, 0, plaintext.length, out, 0);
@@ -85,8 +89,12 @@ public final class AriaModes {
     }
 
     public static byte[] decryptCfb(byte[] key, byte[] iv, byte[] ciphertext) {
+        return decryptCfb(key, iv, ciphertext, iv.length * 8);
+    }
+
+    public static byte[] decryptCfb(byte[] key, byte[] iv, byte[] ciphertext, int segmentBits) {
         BlockCipher engine = new AriaBcBlockCipher();
-        CFBBlockCipher cfb = new CFBBlockCipher(engine, iv.length * 8);
+        CFBBlockCipher cfb = new CFBBlockCipher(engine, segmentBits);
         cfb.init(false, new ParametersWithIV(new KeyParameter(key), iv));
         byte[] out = new byte[ciphertext.length];
         cfb.processBytes(ciphertext, 0, ciphertext.length, out, 0);
@@ -94,8 +102,12 @@ public final class AriaModes {
     }
 
     public static byte[] processOfb(byte[] key, byte[] iv, byte[] input) {
+        return processOfb(key, iv, input, iv.length * 8);
+    }
+
+    public static byte[] processOfb(byte[] key, byte[] iv, byte[] input, int segmentBits) {
         BlockCipher engine = new AriaBcBlockCipher();
-        OFBBlockCipher ofb = new OFBBlockCipher(engine, iv.length * 8);
+        OFBBlockCipher ofb = new OFBBlockCipher(engine, segmentBits);
         ofb.init(true, new ParametersWithIV(new KeyParameter(key), iv));
         byte[] out = new byte[input.length];
         ofb.processBytes(input, 0, input.length, out, 0);
