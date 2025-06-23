@@ -1,6 +1,5 @@
 package me.totoku103.crypto.kisa.aria;
 
-import me.totoku103.crypto.kisa.aria.Aria;
 import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.params.KeyParameter;

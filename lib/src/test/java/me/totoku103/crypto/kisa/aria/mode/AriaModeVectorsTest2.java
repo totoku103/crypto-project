@@ -1,17 +1,17 @@
 package me.totoku103.crypto.kisa.aria.mode;
 
 import me.totoku103.crypto.kisa.aria.AriaBcBlockCipher;
+import me.totoku103.crypto.utils.HexConverter;
 import me.totoku103.crypto.utils.PaddingUtils;
 import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.params.KeyParameter;
-import me.totoku103.crypto.utils.HexConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-public class AriaModeVectorsTest {
+public class AriaModeVectorsTest2 {
     private static final byte[] KEY = HexConverter.toBytes("00112233445566778899aabbccddeeff");
     private static final byte[] IV = HexConverter.toBytes("0f1e2d3c4b5a69788796a5b4c3d2e1f0");
     private static final byte[] PLAINTEXT = HexConverter.toBytes(

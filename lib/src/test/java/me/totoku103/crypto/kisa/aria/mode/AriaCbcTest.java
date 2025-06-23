@@ -1,8 +1,7 @@
 package me.totoku103.crypto.kisa.aria.mode;
 
 
-import me.totoku103.crypto.kisa.aria.Aria;
-import me.totoku103.crypto.utils.ConvertUtils;
+import me.totoku103.crypto.utils.HexConverter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,7 +13,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class AriaCbcTest {
-    private static final byte[] IV = ConvertUtils.fromHex("0f1e2d3c4b5a69788796a5b4c3d2e1f0");
+    private static final byte[] IV = HexConverter.toBytes("0f1e2d3c4b5a69788796a5b4c3d2e1f0");
 
     private static Stream<Arguments> cbcTestVectors() {
         return Stream.of(
@@ -43,9 +42,9 @@ public class AriaCbcTest {
     @MethodSource("cbcTestVectors")
     @DisplayName("고정된 IV를 사용한 CBC 모드 암복호화가 테스트 벡터와 일치하는지 확인")
     void cbcWithFixedIvShouldMatchVectors(int keySize, String keyHex, String ptHex, String ctHex) throws InvalidKeyException {
-        byte[] key = ConvertUtils.fromHex(keyHex);
-        byte[] plain = ConvertUtils.fromHex(ptHex);
-        byte[] expected = ConvertUtils.fromHex(ctHex);
+        byte[] key = HexConverter.toBytes(keyHex);
+        byte[] plain = HexConverter.toBytes(ptHex);
+        byte[] expected = HexConverter.toBytes(ctHex);
 
         byte[] cipher = AriaModes.encryptCbc(key, IV, plain);
         assertArrayEquals(expected, cipher);
