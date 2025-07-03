@@ -40,3 +40,13 @@ tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+tasks.jar {
+    archiveBaseName.set("crypto")
+    archiveVersion.set("1.0.0")
+    manifest {
+        attributes(
+            "Main-Class" to "me.totoku103.crypto"
+        )
+    }
+}
