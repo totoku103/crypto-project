@@ -60,3 +60,6 @@ jobs:
       with:
         java-version: '8'
         distribution: 'temurin'
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v4.3.0
+              
