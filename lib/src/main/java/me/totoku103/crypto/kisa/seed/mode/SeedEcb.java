@@ -8,7 +8,7 @@ public class SeedEcb {
     private static final int ENDIAN = Common.BIG_ENDIAN;
 
     private static int endianChange(int val) {
-        return ((val << 8 | (val >> 24 & 0x000000ff)) & 0x00ff00ff) | ((val << 24 | (val >> 8 & 0x00ffffff)) & 0xff00ff00);
+        return (((((val) << (8)) | (((val) >> (32 - (8))) & 0x000000ff)) & 0x00ff00ff) | ((((val) << (24)) | (((val) >> (32 - (24))) & 0x00ffffff)) & 0xff00ff00));
     }
 
     private static final int[] S_BOX0 = {
