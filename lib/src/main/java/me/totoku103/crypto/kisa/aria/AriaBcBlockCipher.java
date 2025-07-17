@@ -18,9 +18,11 @@ public class AriaBcBlockCipher implements BlockCipher {
 
     @Override
     public void init(boolean forEncryption, CipherParameters params) throws IllegalArgumentException {
-        if (!(params instanceof KeyParameter kp)) {
+        if (!(params instanceof KeyParameter)) {
             throw new IllegalArgumentException("KeyParameter required");
         }
+
+        final KeyParameter kp = (KeyParameter) params;
         byte[] key = kp.getKey();
         int keyBits = key.length * 8;
         try {
