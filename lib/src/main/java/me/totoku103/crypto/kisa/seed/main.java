@@ -1,5 +1,7 @@
 package me.totoku103.crypto.kisa.seed;
 
+import me.totoku103.crypto.kisa.seed.mode.SeedGcm;
+
 public class main {
     public static void main(String[] args) {
         byte[] key = new byte[160];

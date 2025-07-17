@@ -1,4 +1,6 @@
-package me.totoku103.crypto.kisa.seed;
+package me.totoku103.crypto.kisa.seed.mode;
+
+import me.totoku103.crypto.kisa.seed.Seed;
 
 public class SeedGcm {
     private static final int BLOCK_SIZE_SEED = 16;
