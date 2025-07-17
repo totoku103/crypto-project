@@ -43,7 +43,7 @@ class AriaModesTest {
     @DisplayName("GCM 모드 암복호화를 수행하여 태그와 함께 원문이 복원되는지 검증")
     void gcmModeShouldRoundTrip() throws InvalidCipherTextException {
         byte[] data = "gcm test data".getBytes();
-        var res = AriaModes.encryptGcm(KEY, IV, AAD, data, 128);
+        AriaModes.AeadResult res = AriaModes.encryptGcm(KEY, IV, AAD, data, 128);
         byte[] plain = AriaModes.decryptGcm(KEY, IV, AAD, res.ciphertext, res.tag);
         assertArrayEquals(data, plain);
     }
@@ -52,7 +52,7 @@ class AriaModesTest {
     @DisplayName("CCM 모드 암복호화를 수행하여 태그와 함께 원문이 복원되는지 검증")
     void ccmModeShouldRoundTrip() throws InvalidCipherTextException {
         byte[] data = "ccm test data".getBytes();
-        var res = AriaModes.encryptCcm(KEY, IV, AAD, data, 128);
+        AriaModes.AeadResult res = AriaModes.encryptCcm(KEY, IV, AAD, data, 128);
         byte[] plain = AriaModes.decryptCcm(KEY, IV, AAD, res.ciphertext, res.tag);
         assertArrayEquals(data, plain);
     }
