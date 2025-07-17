@@ -43,10 +43,5 @@ tasks.named<Test>("test") {
 
 tasks.jar {
     archiveBaseName.set("crypto")
-    archiveVersion.set("0.0.1")
-    manifest {
-        attributes(
-            "Main-Class" to "me.totoku103.crypto"
-        )
-    }
+    archiveVersion.set("1.0.0")
 }
