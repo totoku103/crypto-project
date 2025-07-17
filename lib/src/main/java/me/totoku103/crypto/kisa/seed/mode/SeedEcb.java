@@ -275,7 +275,7 @@ public class SeedEcb {
 
     public static String encrypt(String userKey, String plainText) {
         final byte[] userKeyBytes = userKey.getBytes(StandardCharsets.UTF_8);
-        if (userKeyBytes.length < 16) {
+        if (userKeyBytes.length != 16) {
             throw new IllegalArgumentException("User key must be 16 bytes long.");
         }
         final byte[] dataBytes = plainText.getBytes(StandardCharsets.UTF_8);
@@ -285,7 +285,7 @@ public class SeedEcb {
 
     public static String decrypt(String userKey, String encryptedData) {
         final byte[] userKeyBytes = userKey.getBytes(StandardCharsets.UTF_8);
-        if (userKeyBytes.length < 16) {
+        if (userKeyBytes.length != 16) {
             throw new IllegalArgumentException("User key must be 16 bytes long.");
         }
         final byte[] dataBytes = HexConverter.toBytes(encryptedData);
