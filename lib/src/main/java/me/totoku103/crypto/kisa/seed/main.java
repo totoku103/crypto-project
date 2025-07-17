@@ -24,7 +24,7 @@ public class main {
 
         macLen = 12;
 
-        out1Len = seed_gcm.encryption(out1, in, inLen, macLen, nonce, nonceLen, aad, aadLen, key);
+        out1Len = seed_gcm.encryptionGcm(out1, in, inLen, macLen, nonce, nonceLen, aad, aadLen, key);
         printResult("SEED GCM Encryption", out1Len);
 
         printHex("key", key, keyLen);
@@ -33,7 +33,7 @@ public class main {
         printHex("aad", aad, aadLen);
         printHex("out1", out1, out1Len);
 
-        out2Len = seed_gcm.decryption(out2, out1, out1Len, macLen, nonce, nonceLen, aad, aadLen, key);
+        out2Len = seed_gcm.decryptionGcm(out2, out1, out1Len, macLen, nonce, nonceLen, aad, aadLen, key);
         printResult("SEED GCM Decryption", out2Len);
 
         printHex("in", out1, out1Len);
@@ -48,7 +48,7 @@ public class main {
 
         macLen = 16;
 
-        out1Len = seed_gcm.encryption(out1, in, inLen, macLen, nonce, nonceLen, aad, aadLen, key);
+        out1Len = seed_gcm.encryptionGcm(out1, in, inLen, macLen, nonce, nonceLen, aad, aadLen, key);
         printResult("SEED GCM Encryption", out1Len);
 
         printHex("key", key, keyLen);
@@ -57,7 +57,7 @@ public class main {
         printHex("aad", aad, aadLen);
         printHex("out1", out1, out1Len);
 
-        out2Len = seed_gcm.decryption(out2, out1, out1Len, macLen, nonce, nonceLen, aad, aadLen, key);
+        out2Len = seed_gcm.decryptionGcm(out2, out1, out1Len, macLen, nonce, nonceLen, aad, aadLen, key);
         printResult("SEED GCM Decryption", out2Len);
 
         printHex("in", out1, out1Len);

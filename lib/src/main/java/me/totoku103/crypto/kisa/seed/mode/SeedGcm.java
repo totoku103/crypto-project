@@ -1,32 +1,37 @@
 package me.totoku103.crypto.kisa.seed.mode;
 
 import me.totoku103.crypto.kisa.seed.Seed;
+import me.totoku103.crypto.utils.HexConverter;
+
+import java.nio.charset.StandardCharsets;
+import java.util.logging.Logger;
 
 public class SeedGcm {
-    private static final int BLOCK_SIZE_SEED = 16;
+    private final int BLOCK_SIZE_SEED = 16;
+    private final Logger log = Logger.getLogger(SeedGcm.class.getName());
 
-    private static void shiftR1(int[] r) {
+    private void shiftR1(int[] r) {
         r[3] = ((r[3] >> 1) & 0x7FFFFFFF) ^ ((r[2] << 31) & 0x80000000);
         r[2] = ((r[2] >> 1) & 0x7FFFFFFF) ^ ((r[1] << 31) & 0x80000000);
         r[1] = ((r[1] >> 1) & 0x7FFFFFFF) ^ ((r[0] << 31) & 0x80000000);
         r[0] = ((r[0] >> 1) & 0x7FFFFFFF);
     }
 
-    private static void shiftR8(int[] r) {
+    private void shiftR8(int[] r) {
         r[3] = ((r[3] >> 8) & 0x00FFFFFF) ^ ((r[2] << 24) & 0xFF000000);
         r[2] = ((r[2] >> 8) & 0x00FFFFFF) ^ ((r[1] << 24) & 0xFF000000);
         r[1] = ((r[1] >> 8) & 0x00FFFFFF) ^ ((r[0] << 24) & 0xFF000000);
         r[0] = ((r[0] >> 8) & 0x00FFFFFF);
     }
 
-    private static void xor128(int[] r, int[] a, int[] b) {
+    private void xor128(int[] r, int[] a, int[] b) {
         r[0] = a[0] ^ b[0];
         r[1] = a[1] ^ b[1];
         r[2] = a[2] ^ b[2];
         r[3] = a[3] ^ b[3];
     }
 
-    private static void increase(int[] ctr) {
+    private void increase(int[] ctr) {
         if (ctr[3] == 0xFFFFFFFF) {
             ctr[2]++;
             ctr[3] = 0;
@@ -35,14 +40,14 @@ public class SeedGcm {
         }
     }
 
-    private static void zero128(int[] a) {
+    private void zero128(int[] a) {
         a[0] = 0x00000000;
         a[1] = 0x00000000;
         a[2] = 0x00000000;
         a[3] = 0x00000000;
     }
 
-    private static void byte2Word(int[] dst, byte[] src, int srcOffset, int srcLen) {
+    private void byte2Word(int[] dst, byte[] src, int srcOffset, int srcLen) {
         int i = 0;
         int remain = 0;
 
@@ -60,7 +65,7 @@ public class SeedGcm {
         }
     }
 
-    private static void word2Byte(byte[] dst, int dstOffset, int[] src, int srcLen) {
+    private void word2Byte(byte[] dst, int dstOffset, int[] src, int srcLen) {
         int i = 0;
         int remain = 0;
 
@@ -78,7 +83,7 @@ public class SeedGcm {
         }
     }
 
-    private static final int[] R8 =
+    private final int[] R8 =
             {
                     0x00000000, 0x01c20000, 0x03840000, 0x02460000, 0x07080000, 0x06ca0000, 0x048c0000, 0x054e0000,
                     0x0e100000, 0x0fd20000, 0x0d940000, 0x0c560000, 0x09180000, 0x08da0000, 0x0a9c0000, 0x0b5e0000,
@@ -114,7 +119,7 @@ public class SeedGcm {
                     0xbbf00000, 0xba320000, 0xb8740000, 0xb9b60000, 0xbcf80000, 0xbd3a0000, 0xbf7c0000, 0xbebe0000
             };
 
-    private static void makeM8(int[][] M, int[] H) {
+    private void makeM8(int[][] M, int[] H) {
         int i = 64, j = 0;
         int[] temp = new int[4];
 
@@ -163,7 +168,7 @@ public class SeedGcm {
         M[0][3] = 0;
     }
 
-    private static void ghash8Bit(int[] out, int[] in, int[][] m, int[] r) {
+    private void ghash8Bit(int[] out, int[] in, int[][] m, int[] r) {
         int[] W = new int[4];
         int[] Z = new int[4];
         int temp = 0, i = 0;
@@ -192,7 +197,53 @@ public class SeedGcm {
         out[3] = W[3] ^ m[temp][3];
     }
 
-    public int encryption(
+    private byte[] getMKeyBytes(String mKey) {
+        final byte[] mKeyBytes = mKey.getBytes(StandardCharsets.UTF_8);
+        if (mKeyBytes.length != 16) {
+            throw new IllegalArgumentException("Key must be 16 bytes long for SEED GCM. [" + mKeyBytes.length + "] " + mKey);
+        }
+        return mKeyBytes;
+    }
+
+    public String encrypt(String mKey, String plainText, String nonce, String aad) {
+        final byte[] mKeyBytes = getMKeyBytes(mKey);
+
+        final byte[] textBytes = plainText.getBytes(StandardCharsets.UTF_8);
+        final int textBytesLength = textBytes.length;
+        final int macLen = this.BLOCK_SIZE_SEED;
+        final byte[] nonceBytes = nonce.getBytes(StandardCharsets.UTF_8);
+        final int nonceBytesLength = nonceBytes.length;
+
+        final byte[] addBytes = aad.getBytes(StandardCharsets.UTF_8);
+        final int addBytesLength = addBytes.length;
+
+        final byte[] ct = new byte[textBytesLength + macLen];
+        final int encryptLength = encryptionGcm(ct, textBytes, textBytesLength, macLen, nonceBytes, nonceBytesLength, addBytes, addBytesLength, mKeyBytes);
+        log.info("Encrypted length: " + encryptLength);
+        final String encryptMessage = HexConverter.fromBytes(ct);
+        log.info("Encrypted message: " + encryptMessage);
+        return encryptMessage;
+    }
+
+    public String decrypt(String mKey, String cipherText, String nonce, String aad) {
+        final byte[] mKeyBytes = getMKeyBytes(mKey);
+
+        final byte[] ct = HexConverter.toBytes(cipherText);
+        final int ctLen = ct.length;
+        final int macLen = this.BLOCK_SIZE_SEED;
+        final byte[] nonceBytes = nonce.getBytes(StandardCharsets.UTF_8);
+        final int nonceBytesLength = nonceBytes.length;
+
+        final byte[] addBytes = aad.getBytes(StandardCharsets.UTF_8);
+        final int addBytesLength = addBytes.length;
+
+        final byte[] pt = new byte[ctLen - macLen];
+        final int decryptLength = decryptionGcm(pt, ct, ctLen, macLen, nonceBytes, nonceBytesLength, addBytes, addBytesLength, mKeyBytes);
+        log.info("Decrypted length: " + decryptLength);
+        return new String(pt, StandardCharsets.UTF_8);
+    }
+
+    public int encryptionGcm(
             byte[] ct,
             byte[] pt,
             int ptLen,
@@ -303,7 +354,7 @@ public class SeedGcm {
         return ptLen + macLen;
     }
 
-    public int decryption(
+    public int decryptionGcm(
             byte[] pt,
             byte[] ct,
             int ctLen,

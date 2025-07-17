@@ -2,6 +2,7 @@ package me.totoku103.crypto.kisa.seed;
 
 import me.totoku103.crypto.kisa.seed.mode.SeedGcm;
 import me.totoku103.crypto.utils.HexConverter;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -41,7 +42,7 @@ class SeedGcmTest {
 
         // 2. Encryption
         byte[] ct = new byte[ptLen + macLen];
-        int ctLen = seedGcm.encryption(ct, pt, ptLen, macLen, nonce, nonce.length, aad, aad.length, mKey);
+        int ctLen = seedGcm.encryptionGcm(ct, pt, ptLen, macLen, nonce, nonce.length, aad, aad.length, mKey);
 
         assertEquals(ptLen + macLen, ctLen, "Encryption returned incorrect length");
 
@@ -52,7 +53,7 @@ class SeedGcmTest {
 
         // 3. Decryption
         byte[] decryptedPt = new byte[ptLen];
-        int decryptedPtLen = seedGcm.decryption(decryptedPt, ct, ctLen, macLen, nonce, nonce.length, aad, aad.length, mKey);
+        int decryptedPtLen = seedGcm.decryptionGcm(decryptedPt, ct, ctLen, macLen, nonce, nonce.length, aad, aad.length, mKey);
 
         assertEquals(ptLen, decryptedPtLen, "Decryption returned incorrect length");
 
@@ -62,5 +63,21 @@ class SeedGcmTest {
         // 4. Verification
         assertArrayEquals(pt, decryptedPt, "Decrypted plaintext does not match original plaintext");
         System.out.println("\nEncryption and decryption successful!");
+    }
+
+    @Test
+    public void simpleTest() {
+        final String mKey = "ABCDEFGHIJKLMNOP";
+        final String plainText = "나랏말싸미듕귁에달아문자와로 서로 사맛디 아니할쎄 이런 전차로 어린 백셩이 니르고져 홀베이셔도";
+        final String nonce = "1234567890AB";
+        final String aad = "Additional Authenticated Data";
+
+        final SeedGcm seedGcm = new SeedGcm();
+        final String encrypt = seedGcm.encrypt(mKey, plainText, nonce, aad);
+        System.out.println(encrypt);
+
+        final String decrypt = seedGcm.decrypt(mKey, encrypt, nonce, aad);
+        System.out.println(decrypt);
+        Assertions.assertEquals(plainText, decrypt);
     }
 }
