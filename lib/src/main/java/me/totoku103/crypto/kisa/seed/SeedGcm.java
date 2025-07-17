@@ -1,30 +1,30 @@
 package me.totoku103.crypto.kisa.seed;
 
 public class SeedGcm {
-    private static int BLOCK_SIZE_SEED = 16;
+    private static final int BLOCK_SIZE_SEED = 16;
 
-    private static void SHIFTR1(int[] R) {
-        R[3] = ((R[3] >> 1) & 0x7FFFFFFF) ^ ((R[2] << 31) & 0x80000000);
-        R[2] = ((R[2] >> 1) & 0x7FFFFFFF) ^ ((R[1] << 31) & 0x80000000);
-        R[1] = ((R[1] >> 1) & 0x7FFFFFFF) ^ ((R[0] << 31) & 0x80000000);
-        R[0] = ((R[0] >> 1) & 0x7FFFFFFF);
+    private static void shiftR1(int[] r) {
+        r[3] = ((r[3] >> 1) & 0x7FFFFFFF) ^ ((r[2] << 31) & 0x80000000);
+        r[2] = ((r[2] >> 1) & 0x7FFFFFFF) ^ ((r[1] << 31) & 0x80000000);
+        r[1] = ((r[1] >> 1) & 0x7FFFFFFF) ^ ((r[0] << 31) & 0x80000000);
+        r[0] = ((r[0] >> 1) & 0x7FFFFFFF);
     }
 
-    private static void SHIFTR8(int[] R) {
-        R[3] = ((R[3] >> 8) & 0x00FFFFFF) ^ ((R[2] << 24) & 0xFF000000);
-        R[2] = ((R[2] >> 8) & 0x00FFFFFF) ^ ((R[1] << 24) & 0xFF000000);
-        R[1] = ((R[1] >> 8) & 0x00FFFFFF) ^ ((R[0] << 24) & 0xFF000000);
-        R[0] = ((R[0] >> 8) & 0x00FFFFFF);
+    private static void shiftR8(int[] r) {
+        r[3] = ((r[3] >> 8) & 0x00FFFFFF) ^ ((r[2] << 24) & 0xFF000000);
+        r[2] = ((r[2] >> 8) & 0x00FFFFFF) ^ ((r[1] << 24) & 0xFF000000);
+        r[1] = ((r[1] >> 8) & 0x00FFFFFF) ^ ((r[0] << 24) & 0xFF000000);
+        r[0] = ((r[0] >> 8) & 0x00FFFFFF);
     }
 
-    private static void XOR128(int[] R, int[] A, int[] B) {
-        R[0] = A[0] ^ B[0];
-        R[1] = A[1] ^ B[1];
-        R[2] = A[2] ^ B[2];
-        R[3] = A[3] ^ B[3];
+    private static void xor128(int[] r, int[] a, int[] b) {
+        r[0] = a[0] ^ b[0];
+        r[1] = a[1] ^ b[1];
+        r[2] = a[2] ^ b[2];
+        r[3] = a[3] ^ b[3];
     }
 
-    private static void INCREASE(int[] ctr) {
+    private static void increase(int[] ctr) {
         if (ctr[3] == 0xFFFFFFFF) {
             ctr[2]++;
             ctr[3] = 0;
@@ -33,14 +33,14 @@ public class SeedGcm {
         }
     }
 
-    private static void ZERO128(int[] a) {
+    private static void zero128(int[] a) {
         a[0] = 0x00000000;
         a[1] = 0x00000000;
         a[2] = 0x00000000;
         a[3] = 0x00000000;
     }
 
-    private static void Byte2Word(int[] dst, byte[] src, int src_offset, int srcLen) {
+    private static void byte2Word(int[] dst, byte[] src, int srcOffset, int srcLen) {
         int i = 0;
         int remain = 0;
 
@@ -48,17 +48,17 @@ public class SeedGcm {
             remain = i & 3;
 
             if (remain == 0)
-                dst[i >> 2] = ((src[src_offset + i] & 0x0FF) << 24);
+                dst[i >> 2] = ((src[srcOffset + i] & 0x0FF) << 24);
             else if (remain == 1)
-                dst[i >> 2] ^= ((src[src_offset + i] & 0x0FF) << 16);
+                dst[i >> 2] ^= ((src[srcOffset + i] & 0x0FF) << 16);
             else if (remain == 2)
-                dst[i >> 2] ^= ((src[src_offset + i] & 0x0FF) << 8);
+                dst[i >> 2] ^= ((src[srcOffset + i] & 0x0FF) << 8);
             else
-                dst[i >> 2] ^= (src[src_offset + i] & 0x0FF);
+                dst[i >> 2] ^= (src[srcOffset + i] & 0x0FF);
         }
     }
 
-    private static void Word2Byte(byte[] dst, int dst_offset, int[] src, int srcLen) {
+    private static void word2Byte(byte[] dst, int dstOffset, int[] src, int srcLen) {
         int i = 0;
         int remain = 0;
 
@@ -66,17 +66,17 @@ public class SeedGcm {
             remain = i & 3;
 
             if (remain == 0)
-                dst[dst_offset + i] = (byte) (src[i >> 2] >> 24);
+                dst[dstOffset + i] = (byte) (src[i >> 2] >> 24);
             else if (remain == 1)
-                dst[dst_offset + i] = (byte) (src[i >> 2] >> 16);
+                dst[dstOffset + i] = (byte) (src[i >> 2] >> 16);
             else if (remain == 2)
-                dst[dst_offset + i] = (byte) (src[i >> 2] >> 8);
+                dst[dstOffset + i] = (byte) (src[i >> 2] >> 8);
             else
-                dst[dst_offset + i] = (byte) src[i >> 2];
+                dst[dstOffset + i] = (byte) src[i >> 2];
         }
     }
 
-    private static final int R8[] =
+    private static final int[] R8 =
             {
                     0x00000000, 0x01c20000, 0x03840000, 0x02460000, 0x07080000, 0x06ca0000, 0x048c0000, 0x054e0000,
                     0x0e100000, 0x0fd20000, 0x0d940000, 0x0c560000, 0x09180000, 0x08da0000, 0x0a9c0000, 0x0b5e0000,
@@ -128,10 +128,10 @@ public class SeedGcm {
             temp[3] = M[i << 1][3];
 
             if ((temp[3] & 0x01) == 1) {
-                SHIFTR1(temp);
+                shiftR1(temp);
                 temp[0] ^= 0xE1000000;
             } else {
-                SHIFTR1(temp);
+                shiftR1(temp);
             }
 
             M[i][0] = temp[0];
@@ -161,41 +161,44 @@ public class SeedGcm {
         M[0][3] = 0;
     }
 
-    private static void GHASH_8BIT(int[] out, int[] in, int[][] M, int[] R) {
+    private static void ghash8Bit(int[] out, int[] in, int[][] m, int[] r) {
         int[] W = new int[4];
         int[] Z = new int[4];
         int temp = 0, i = 0;
 
-        XOR128(Z, out, in);
+        xor128(Z, out, in);
 
         for (i = 0; i < 15; i++) {
             temp = ((Z[3 - (i >> 2)] >> ((i & 3) << 3)) & 0x0FF);
 
-            W[0] ^= M[temp][0];
-            W[1] ^= M[temp][1];
-            W[2] ^= M[temp][2];
-            W[3] ^= M[temp][3];
+            W[0] ^= m[temp][0];
+            W[1] ^= m[temp][1];
+            W[2] ^= m[temp][2];
+            W[3] ^= m[temp][3];
 
             temp = W[3] & 0x0FF;
 
-            SHIFTR8(W);
-            W[0] ^= R[temp];
+            shiftR8(W);
+            W[0] ^= r[temp];
         }
 
         temp = (Z[0] >> 24) & 0xFF;
 
-        out[0] = W[0] ^ M[temp][0];
-        out[1] = W[1] ^ M[temp][1];
-        out[2] = W[2] ^ M[temp][2];
-        out[3] = W[3] ^ M[temp][3];
+        out[0] = W[0] ^ m[temp][0];
+        out[1] = W[1] ^ m[temp][1];
+        out[2] = W[2] ^ m[temp][2];
+        out[3] = W[3] ^ m[temp][3];
     }
 
-    public int SEED_GCM_Encryption(
+    public int encryption(
             byte[] ct,
-            byte[] pt, int ptLen,
+            byte[] pt,
+            int ptLen,
             int macLen,
-            byte[] nonce, int nonceLen,
-            byte[] aad, int aadLen,
+            byte[] nonce,
+            int nonceLen,
+            byte[] aad,
+            int aadLen,
             byte[] mKey) {
         int[] rKey = new int[100];
         int[] H = new int[4];
@@ -212,98 +215,101 @@ public class SeedGcm {
         if (macLen > 16)
             return 1;
 
-        seed.SEED_KeySched(mKey, rKey);
+        seed.keyShed(mKey, rKey);
 
-        seed.SEED_Encrypt(H, H, rKey);
+        seed.encrypt(H, H, rKey);
 
         makeM8(M8, H);
 
         if (nonceLen == 12) {
-            Byte2Word(GCTR_in, nonce, 0, nonceLen);
+            byte2Word(GCTR_in, nonce, 0, nonceLen);
 
             GCTR_in[3] = 1;
 
-            seed.SEED_Encrypt(Z, GCTR_in, rKey);
+            seed.encrypt(Z, GCTR_in, rKey);
         } else {
             for (i = 0; i < nonceLen; i += BLOCK_SIZE_SEED) {
-                ZERO128(tmp);
+                zero128(tmp);
 
                 if ((nonceLen - i) < 16)
-                    Byte2Word(tmp, nonce, i, nonceLen - i);
+                    byte2Word(tmp, nonce, i, nonceLen - i);
                 else
-                    Byte2Word(tmp, nonce, i, BLOCK_SIZE_SEED);
+                    byte2Word(tmp, nonce, i, BLOCK_SIZE_SEED);
 
-                GHASH_8BIT(GCTR_in, tmp, M8, R8);
+                ghash8Bit(GCTR_in, tmp, M8, R8);
             }
 
-            ZERO128(tmp);
+            zero128(tmp);
             tmp[3] = (nonceLen << 3);
 
-            GHASH_8BIT(GCTR_in, tmp, M8, R8);
+            ghash8Bit(GCTR_in, tmp, M8, R8);
 
-            seed.SEED_Encrypt(Z, GCTR_in, rKey);
+            seed.encrypt(Z, GCTR_in, rKey);
         }
 
         for (i = 0; i < ptLen; i += BLOCK_SIZE_SEED) {
-            ZERO128(tmp);
+            zero128(tmp);
 
-            INCREASE(GCTR_in);
+            increase(GCTR_in);
 
-            seed.SEED_Encrypt(GCTR_out, GCTR_in, rKey);
+            seed.encrypt(GCTR_out, GCTR_in, rKey);
 
             if ((ptLen - i) < 16) {
-                Byte2Word(tmp, pt, i, ptLen - i);
-                XOR128(GCTR_out, GCTR_out, tmp);
-                Word2Byte(ct, i, GCTR_out, ptLen - i);
+                byte2Word(tmp, pt, i, ptLen - i);
+                xor128(GCTR_out, GCTR_out, tmp);
+                word2Byte(ct, i, GCTR_out, ptLen - i);
             } else {
-                Byte2Word(tmp, pt, i, BLOCK_SIZE_SEED);
-                XOR128(GCTR_out, GCTR_out, tmp);
-                Word2Byte(ct, i, GCTR_out, BLOCK_SIZE_SEED);
+                byte2Word(tmp, pt, i, BLOCK_SIZE_SEED);
+                xor128(GCTR_out, GCTR_out, tmp);
+                word2Byte(ct, i, GCTR_out, BLOCK_SIZE_SEED);
             }
         }
 
         for (i = 0; i < aadLen; i += BLOCK_SIZE_SEED) {
-            ZERO128(GHASH_in);
+            zero128(GHASH_in);
 
             if ((aadLen - i) < 16)
-                Byte2Word(GHASH_in, aad, i, aadLen - i);
+                byte2Word(GHASH_in, aad, i, aadLen - i);
             else
-                Byte2Word(GHASH_in, aad, i, BLOCK_SIZE_SEED);
+                byte2Word(GHASH_in, aad, i, BLOCK_SIZE_SEED);
 
-            GHASH_8BIT(GHASH_out, GHASH_in, M8, R8);
+            ghash8Bit(GHASH_out, GHASH_in, M8, R8);
         }
 
         for (i = 0; i < ptLen; i += BLOCK_SIZE_SEED) {
-            ZERO128(GHASH_in);
+            zero128(GHASH_in);
 
             if ((ptLen - i) < 16)
-                Byte2Word(GHASH_in, ct, i, ptLen - i);
+                byte2Word(GHASH_in, ct, i, ptLen - i);
             else
-                Byte2Word(GHASH_in, ct, i, BLOCK_SIZE_SEED);
+                byte2Word(GHASH_in, ct, i, BLOCK_SIZE_SEED);
 
-            GHASH_8BIT(GHASH_out, GHASH_in, M8, R8);
+            ghash8Bit(GHASH_out, GHASH_in, M8, R8);
         }
 
-        ZERO128(GHASH_in);
+        zero128(GHASH_in);
 
         GHASH_in[1] ^= aadLen << 3;
         GHASH_in[3] ^= ptLen << 3;
 
-        GHASH_8BIT(GHASH_out, GHASH_in, M8, R8);
+        ghash8Bit(GHASH_out, GHASH_in, M8, R8);
 
-        XOR128(GHASH_out, GHASH_out, Z);
+        xor128(GHASH_out, GHASH_out, Z);
 
-        Word2Byte(ct, ptLen, GHASH_out, macLen);
+        word2Byte(ct, ptLen, GHASH_out, macLen);
 
         return ptLen + macLen;
     }
 
-    public int SEED_GCM_Decryption(
+    public int decryption(
             byte[] pt,
-            byte[] ct, int ctLen,
+            byte[] ct,
+            int ctLen,
             int macLen,
-            byte[] nonce, int nonceLen,
-            byte[] aad, int aadLen,
+            byte[] nonce,
+            int nonceLen,
+            byte[] aad,
+            int aadLen,
             byte[] mKey) {
         int[] rKey = new int[100];
         int[] H = new int[4];
@@ -321,88 +327,88 @@ public class SeedGcm {
         if (macLen > 16)
             return 1;
 
-        seed.SEED_KeySched(mKey, rKey);
+        seed.keyShed(mKey, rKey);
 
-        seed.SEED_Encrypt(H, H, rKey);
+        seed.encrypt(H, H, rKey);
 
         makeM8(M8, H);
 
         if (nonceLen == 12) {
-            Byte2Word(GCTR_in, nonce, 0, nonceLen);
+            byte2Word(GCTR_in, nonce, 0, nonceLen);
 
             GCTR_in[3] = 1;
 
-            seed.SEED_Encrypt(Z, GCTR_in, rKey);
+            seed.encrypt(Z, GCTR_in, rKey);
         } else {
             for (i = 0; i < nonceLen; i += BLOCK_SIZE_SEED) {
-                ZERO128(tmp);
+                zero128(tmp);
 
                 if ((nonceLen - i) < 16)
-                    Byte2Word(tmp, nonce, i, nonceLen - i);
+                    byte2Word(tmp, nonce, i, nonceLen - i);
                 else
-                    Byte2Word(tmp, nonce, i, BLOCK_SIZE_SEED);
+                    byte2Word(tmp, nonce, i, BLOCK_SIZE_SEED);
 
-                GHASH_8BIT(GCTR_in, tmp, M8, R8);
+                ghash8Bit(GCTR_in, tmp, M8, R8);
             }
 
-            ZERO128(tmp);
+            zero128(tmp);
             tmp[3] = (nonceLen << 3);
 
-            GHASH_8BIT(GCTR_in, tmp, M8, R8);
+            ghash8Bit(GCTR_in, tmp, M8, R8);
 
-            seed.SEED_Encrypt(Z, GCTR_in, rKey);
+            seed.encrypt(Z, GCTR_in, rKey);
         }
 
         for (i = 0; i < ctLen - macLen; i += BLOCK_SIZE_SEED) {
-            ZERO128(tmp);
+            zero128(tmp);
 
-            INCREASE(GCTR_in);
+            increase(GCTR_in);
 
-            seed.SEED_Encrypt(GCTR_out, GCTR_in, rKey);
+            seed.encrypt(GCTR_out, GCTR_in, rKey);
 
             if ((ctLen - macLen - i) < 16) {
-                Byte2Word(tmp, ct, i, ctLen - macLen - i);
-                XOR128(GCTR_out, GCTR_out, tmp);
-                Word2Byte(pt, i, GCTR_out, ctLen - macLen - i);
+                byte2Word(tmp, ct, i, ctLen - macLen - i);
+                xor128(GCTR_out, GCTR_out, tmp);
+                word2Byte(pt, i, GCTR_out, ctLen - macLen - i);
             } else {
-                Byte2Word(tmp, ct, i, BLOCK_SIZE_SEED);
-                XOR128(GCTR_out, GCTR_out, tmp);
-                Word2Byte(pt, i, GCTR_out, BLOCK_SIZE_SEED);
+                byte2Word(tmp, ct, i, BLOCK_SIZE_SEED);
+                xor128(GCTR_out, GCTR_out, tmp);
+                word2Byte(pt, i, GCTR_out, BLOCK_SIZE_SEED);
             }
         }
 
         for (i = 0; i < aadLen; i += BLOCK_SIZE_SEED) {
-            ZERO128(GHASH_in);
+            zero128(GHASH_in);
 
             if ((aadLen - i) < 16)
-                Byte2Word(GHASH_in, aad, i, aadLen - i);
+                byte2Word(GHASH_in, aad, i, aadLen - i);
             else
-                Byte2Word(GHASH_in, aad, i, BLOCK_SIZE_SEED);
+                byte2Word(GHASH_in, aad, i, BLOCK_SIZE_SEED);
 
-            GHASH_8BIT(GHASH_out, GHASH_in, M8, R8);
+            ghash8Bit(GHASH_out, GHASH_in, M8, R8);
         }
 
         for (i = 0; i < ctLen - macLen; i += BLOCK_SIZE_SEED) {
-            ZERO128(GHASH_in);
+            zero128(GHASH_in);
 
             if ((ctLen - macLen - i) < 16)
-                Byte2Word(GHASH_in, ct, i, ctLen - macLen - i);
+                byte2Word(GHASH_in, ct, i, ctLen - macLen - i);
             else
-                Byte2Word(GHASH_in, ct, i, BLOCK_SIZE_SEED);
+                byte2Word(GHASH_in, ct, i, BLOCK_SIZE_SEED);
 
-            GHASH_8BIT(GHASH_out, GHASH_in, M8, R8);
+            ghash8Bit(GHASH_out, GHASH_in, M8, R8);
         }
 
-        ZERO128(GHASH_in);
+        zero128(GHASH_in);
 
         GHASH_in[1] = aadLen << 3;
         GHASH_in[3] = (ctLen - macLen) << 3;
 
-        GHASH_8BIT(GHASH_out, GHASH_in, M8, R8);
+        ghash8Bit(GHASH_out, GHASH_in, M8, R8);
 
-        XOR128(GHASH_out, GHASH_out, Z);
+        xor128(GHASH_out, GHASH_out, Z);
 
-        Word2Byte(MAC, 0, GHASH_out, macLen);
+        word2Byte(MAC, 0, GHASH_out, macLen);
 
         for (i = 0; i < macLen; i++) {
             if (ct[ctLen - macLen + i] != MAC[i]) {

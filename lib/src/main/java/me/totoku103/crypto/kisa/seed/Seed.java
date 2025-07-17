@@ -18,7 +18,7 @@ public class Seed {
     private static final int KC14 = 0xde6e678d;
     private static final int KC15 = 0xbcdccf1b;
 
-    private static final int SS0[] =
+    private static final int[] SS0 =
             {
                     0x2989a1a8, 0x05858184, 0x16c6d2d4, 0x13c3d3d0, 0x14445054, 0x1d0d111c, 0x2c8ca0ac, 0x25052124,
                     0x1d4d515c, 0x03434340, 0x18081018, 0x1e0e121c, 0x11415150, 0x3cccf0fc, 0x0acac2c8, 0x23436360,
@@ -54,7 +54,7 @@ public class Seed {
                     0x28c8e0e8, 0x1b0b1318, 0x05050104, 0x39497178, 0x10809090, 0x2a4a6268, 0x2a0a2228, 0x1a8a9298
             };
 
-    private static final int SS1[] =
+    private static final int[] SS1 =
             {
                     0x38380830, 0xe828c8e0, 0x2c2d0d21, 0xa42686a2, 0xcc0fcfc3, 0xdc1eced2, 0xb03383b3, 0xb83888b0,
                     0xac2f8fa3, 0x60204060, 0x54154551, 0xc407c7c3, 0x44044440, 0x6c2f4f63, 0x682b4b63, 0x581b4b53,
@@ -90,7 +90,7 @@ public class Seed {
                     0xd819c9d1, 0x4c0c4c40, 0x80038383, 0x8c0f8f83, 0xcc0ecec2, 0x383b0b33, 0x480a4a42, 0xb43787b3
             };
 
-    private static final int SS2[] =
+    private static final int[] SS2 =
             {
                     0xa1a82989, 0x81840585, 0xd2d416c6, 0xd3d013c3, 0x50541444, 0x111c1d0d, 0xa0ac2c8c, 0x21242505,
                     0x515c1d4d, 0x43400343, 0x10181808, 0x121c1e0e, 0x51501141, 0xf0fc3ccc, 0xc2c80aca, 0x63602343,
@@ -126,7 +126,7 @@ public class Seed {
                     0xe0e828c8, 0x13181b0b, 0x01040505, 0x71783949, 0x90901080, 0x62682a4a, 0x22282a0a, 0x92981a8a
             };
 
-    private static final int SS3[] =
+    private static final int[] SS3 =
             {
                     0x08303838, 0xc8e0e828, 0x0d212c2d, 0x86a2a426, 0xcfc3cc0f, 0xced2dc1e, 0x83b3b033, 0x88b0b838,
                     0x8fa3ac2f, 0x40606020, 0x45515415, 0xc7c3c407, 0x44404404, 0x4f636c2f, 0x4b63682b, 0x4b53581b,
@@ -162,172 +162,172 @@ public class Seed {
                     0xc9d1d819, 0x4c404c0c, 0x83838003, 0x8f838c0f, 0xcec2cc0e, 0x0b33383b, 0x4a42480a, 0x87b3b437
             };
 
-    private static final byte GetB0(int A) {
-        return (byte) (A & 0x0FF);
+    private static byte GetB0(int a) {
+        return (byte) (a & 0x0FF);
     }
 
-    private static final byte GetB1(int A) {
-        return (byte) ((A >> 8) & 0x0FF);
+    private static byte GetB1(int a) {
+        return (byte) ((a >> 8) & 0x0FF);
     }
 
-    private static final byte GetB2(int A) {
-        return (byte) ((A >> 16) & 0x0FF);
+    private static byte GetB2(int a) {
+        return (byte) ((a >> 16) & 0x0FF);
     }
 
-    private static final byte GetB3(int A) {
-        return (byte) ((A >> 24) & 0x0FF);
+    private static byte GetB3(int a) {
+        return (byte) ((a >> 24) & 0x0FF);
     }
 
-    private static final void RoundKeyUpdate0(int T[], int[] K, int K_offset, int ABCD[], int KC) {
-        T[0] = ABCD[0] + ABCD[2] - KC;
-        T[1] = ABCD[1] + KC - ABCD[3];
+    private static void roundKeyUpdate0(int[] t, int[] k, int kOffset, int[] abcd, int kc) {
+        t[0] = abcd[0] + abcd[2] - kc;
+        t[1] = abcd[1] + kc - abcd[3];
 
-        K[K_offset + 0] = SS0[GetB0(T[0]) & 0x0FF] ^ SS1[GetB1(T[0]) & 0x0FF] ^
-                SS2[GetB2(T[0]) & 0x0FF] ^ SS3[GetB3(T[0]) & 0x0FF];
-        K[K_offset + 1] = SS0[GetB0(T[1]) & 0x0FF] ^ SS1[GetB1(T[1]) & 0x0FF] ^
-                SS2[GetB2(T[1]) & 0x0FF] ^ SS3[GetB3(T[1]) & 0x0FF];
+        k[kOffset + 0] = SS0[GetB0(t[0]) & 0x0FF] ^ SS1[GetB1(t[0]) & 0x0FF] ^
+                SS2[GetB2(t[0]) & 0x0FF] ^ SS3[GetB3(t[0]) & 0x0FF];
+        k[kOffset + 1] = SS0[GetB0(t[1]) & 0x0FF] ^ SS1[GetB1(t[1]) & 0x0FF] ^
+                SS2[GetB2(t[1]) & 0x0FF] ^ SS3[GetB3(t[1]) & 0x0FF];
 
-        T[0] = ABCD[0];
+        t[0] = abcd[0];
 
-        ABCD[0] = ((ABCD[0] >> 8) & 0x00ffffff) ^ (ABCD[1] << 24);
-        ABCD[1] = ((ABCD[1] >> 8) & 0x00ffffff) ^ (T[0] << 24);
+        abcd[0] = ((abcd[0] >> 8) & 0x00ffffff) ^ (abcd[1] << 24);
+        abcd[1] = ((abcd[1] >> 8) & 0x00ffffff) ^ (t[0] << 24);
     }
 
-    private static final void RoundKeyUpdate1(int T[], int[] K, int K_offset, int ABCD[], int KC) {
-        T[0] = ABCD[0] + ABCD[2] - KC;
-        T[1] = ABCD[1] + KC - ABCD[3];
+    private static void roundKeyUpdate1(int[] t, int[] k, int kOffset, int[] abcd, int kc) {
+        t[0] = abcd[0] + abcd[2] - kc;
+        t[1] = abcd[1] + kc - abcd[3];
 
-        K[K_offset + 0] = SS0[GetB0(T[0]) & 0x0FF] ^ SS1[GetB1(T[0]) & 0x0FF] ^
-                SS2[GetB2(T[0]) & 0x0FF] ^ SS3[GetB3(T[0]) & 0x0FF];
-        K[K_offset + 1] = SS0[GetB0(T[1]) & 0x0FF] ^ SS1[GetB1(T[1]) & 0x0FF] ^
-                SS2[GetB2(T[1]) & 0x0FF] ^ SS3[GetB3(T[1]) & 0x0FF];
+        k[kOffset + 0] = SS0[GetB0(t[0]) & 0x0FF] ^ SS1[GetB1(t[0]) & 0x0FF] ^
+                SS2[GetB2(t[0]) & 0x0FF] ^ SS3[GetB3(t[0]) & 0x0FF];
+        k[kOffset + 1] = SS0[GetB0(t[1]) & 0x0FF] ^ SS1[GetB1(t[1]) & 0x0FF] ^
+                SS2[GetB2(t[1]) & 0x0FF] ^ SS3[GetB3(t[1]) & 0x0FF];
 
-        T[0] = ABCD[2];
+        t[0] = abcd[2];
 
-        ABCD[2] = (ABCD[2] << 8) ^ ((ABCD[3] >> 24) & 0x000000ff);
-        ABCD[3] = (ABCD[3] << 8) ^ ((T[0] >> 24) & 0x000000ff);
+        abcd[2] = (abcd[2] << 8) ^ ((abcd[3] >> 24) & 0x000000ff);
+        abcd[3] = (abcd[3] << 8) ^ ((t[0] >> 24) & 0x000000ff);
     }
 
-    private static final void SeedRound(int[] T, int LR[], int L0, int L1, int R0, int R1, int[] K, int K_offset) {
-        T[0] = LR[R0] ^ K[K_offset + 0];
-        T[1] = LR[R1] ^ K[K_offset + 1];
+    private static void SeedRound(int[] t, int[] lr, int l0, int l1, int r0, int r1, int[] k, int kOffset) {
+        t[0] = lr[r0] ^ k[kOffset + 0];
+        t[1] = lr[r1] ^ k[kOffset + 1];
 
-        T[1] ^= T[0];
-        T[1] = SS0[GetB0(T[1]) & 0x0FF] ^ SS1[GetB1(T[1]) & 0x0FF] ^
-                SS2[GetB2(T[1]) & 0x0FF] ^ SS3[GetB3(T[1]) & 0x0FF];
+        t[1] ^= t[0];
+        t[1] = SS0[GetB0(t[1]) & 0x0FF] ^ SS1[GetB1(t[1]) & 0x0FF] ^
+                SS2[GetB2(t[1]) & 0x0FF] ^ SS3[GetB3(t[1]) & 0x0FF];
 
-        T[0] += T[1];
-        T[0] = SS0[GetB0(T[0]) & 0x0FF] ^ SS1[GetB1(T[0]) & 0x0FF] ^
-                SS2[GetB2(T[0]) & 0x0FF] ^ SS3[GetB3(T[0]) & 0x0FF];
+        t[0] += t[1];
+        t[0] = SS0[GetB0(t[0]) & 0x0FF] ^ SS1[GetB1(t[0]) & 0x0FF] ^
+                SS2[GetB2(t[0]) & 0x0FF] ^ SS3[GetB3(t[0]) & 0x0FF];
 
-        T[1] += T[0];
-        T[1] = SS0[GetB0(T[1]) & 0x0FF] ^ SS1[GetB1(T[1]) & 0x0FF] ^
-                SS2[GetB2(T[1]) & 0x0FF] ^ SS3[GetB3(T[1]) & 0x0FF];
+        t[1] += t[0];
+        t[1] = SS0[GetB0(t[1]) & 0x0FF] ^ SS1[GetB1(t[1]) & 0x0FF] ^
+                SS2[GetB2(t[1]) & 0x0FF] ^ SS3[GetB3(t[1]) & 0x0FF];
 
-        T[0] += T[1];
-        LR[L0] ^= T[0];
-        LR[L1] ^= T[1];
+        t[0] += t[1];
+        lr[l0] ^= t[0];
+        lr[l1] ^= t[1];
     }
 
-    private static int Byte2Word(byte[] src, int src_offset) {
-        return ((src[src_offset] & 0x0FF) << 24) | ((src[src_offset + 1] & 0x0FF) << 16) | ((src[src_offset + 2] & 0x0FF) << 8) | ((src[src_offset + 3] & 0x0FF));
+    private static int byte2Word(byte[] src, int srcOffset) {
+        return ((src[srcOffset] & 0x0FF) << 24) | ((src[srcOffset + 1] & 0x0FF) << 16) | ((src[srcOffset + 2] & 0x0FF) << 8) | ((src[srcOffset + 3] & 0x0FF));
     }
 
-    public void SEED_KeySched(byte[] mKey, int[] rKey) {
-        int ABCD[] = new int[4];
-        int T[] = new int[2];
+    public void keyShed(byte[] mKey, int[] rKey) {
+        final int[] abcd = new int[4];
+        final int[] t = new int[2];
 
-        ABCD[0] = Byte2Word(mKey, 0);
-        ABCD[1] = Byte2Word(mKey, 4);
-        ABCD[2] = Byte2Word(mKey, 8);
-        ABCD[3] = Byte2Word(mKey, 12);
+        abcd[0] = byte2Word(mKey, 0);
+        abcd[1] = byte2Word(mKey, 4);
+        abcd[2] = byte2Word(mKey, 8);
+        abcd[3] = byte2Word(mKey, 12);
 
-        RoundKeyUpdate0(T, rKey, 0, ABCD, KC0);
-        RoundKeyUpdate1(T, rKey, 2, ABCD, KC1);
-        RoundKeyUpdate0(T, rKey, 4, ABCD, KC2);
-        RoundKeyUpdate1(T, rKey, 6, ABCD, KC3);
-        RoundKeyUpdate0(T, rKey, 8, ABCD, KC4);
-        RoundKeyUpdate1(T, rKey, 10, ABCD, KC5);
-        RoundKeyUpdate0(T, rKey, 12, ABCD, KC6);
-        RoundKeyUpdate1(T, rKey, 14, ABCD, KC7);
-        RoundKeyUpdate0(T, rKey, 16, ABCD, KC8);
-        RoundKeyUpdate1(T, rKey, 18, ABCD, KC9);
-        RoundKeyUpdate0(T, rKey, 20, ABCD, KC10);
-        RoundKeyUpdate1(T, rKey, 22, ABCD, KC11);
-        RoundKeyUpdate0(T, rKey, 24, ABCD, KC12);
-        RoundKeyUpdate1(T, rKey, 26, ABCD, KC13);
-        RoundKeyUpdate0(T, rKey, 28, ABCD, KC14);
+        roundKeyUpdate0(t, rKey, 0, abcd, KC0);
+        roundKeyUpdate1(t, rKey, 2, abcd, KC1);
+        roundKeyUpdate0(t, rKey, 4, abcd, KC2);
+        roundKeyUpdate1(t, rKey, 6, abcd, KC3);
+        roundKeyUpdate0(t, rKey, 8, abcd, KC4);
+        roundKeyUpdate1(t, rKey, 10, abcd, KC5);
+        roundKeyUpdate0(t, rKey, 12, abcd, KC6);
+        roundKeyUpdate1(t, rKey, 14, abcd, KC7);
+        roundKeyUpdate0(t, rKey, 16, abcd, KC8);
+        roundKeyUpdate1(t, rKey, 18, abcd, KC9);
+        roundKeyUpdate0(t, rKey, 20, abcd, KC10);
+        roundKeyUpdate1(t, rKey, 22, abcd, KC11);
+        roundKeyUpdate0(t, rKey, 24, abcd, KC12);
+        roundKeyUpdate1(t, rKey, 26, abcd, KC13);
+        roundKeyUpdate0(t, rKey, 28, abcd, KC14);
 
-        T[0] = ABCD[0] + ABCD[2] - KC15;
-        T[1] = ABCD[1] - ABCD[3] + KC15;
+        t[0] = abcd[0] + abcd[2] - KC15;
+        t[1] = abcd[1] - abcd[3] + KC15;
 
-        rKey[30] = SS0[GetB0(T[0]) & 0x0FF] ^ SS1[GetB1(T[0]) & 0x0FF] ^
-                SS2[GetB2(T[0]) & 0x0FF] ^ SS3[GetB3(T[0]) & 0x0FF];
-        rKey[31] = SS0[GetB0(T[1]) & 0x0FF] ^ SS1[GetB1(T[1]) & 0x0FF] ^
-                SS2[GetB2(T[1]) & 0x0FF] ^ SS3[GetB3(T[1]) & 0x0FF];
+        rKey[30] = SS0[GetB0(t[0]) & 0x0FF] ^ SS1[GetB1(t[0]) & 0x0FF] ^
+                SS2[GetB2(t[0]) & 0x0FF] ^ SS3[GetB3(t[0]) & 0x0FF];
+        rKey[31] = SS0[GetB0(t[1]) & 0x0FF] ^ SS1[GetB1(t[1]) & 0x0FF] ^
+                SS2[GetB2(t[1]) & 0x0FF] ^ SS3[GetB3(t[1]) & 0x0FF];
     }
 
-    public void SEED_Encrypt(int[] pOut, int[] pIn, int[] rKey) {
-        int LR[] = new int[4];
-        int T[] = new int[2];
+    public void encrypt(int[] pOut, int[] pIn, int[] rKey) {
+        final int[] lr = new int[4];
+        final int[] t = new int[2];
 
-        LR[0] = pIn[0];
-        LR[1] = pIn[1];
-        LR[2] = pIn[2];
-        LR[3] = pIn[3];
+        lr[0] = pIn[0];
+        lr[1] = pIn[1];
+        lr[2] = pIn[2];
+        lr[3] = pIn[3];
 
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 0);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 2);
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 4);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 6);
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 8);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 10);
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 12);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 14);
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 16);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 18);
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 20);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 22);
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 24);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 26);
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 28);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 30);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 0);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 2);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 4);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 6);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 8);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 10);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 12);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 14);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 16);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 18);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 20);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 22);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 24);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 26);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 28);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 30);
 
-        pOut[0] = LR[2];
-        pOut[1] = LR[3];
-        pOut[2] = LR[0];
-        pOut[3] = LR[1];
+        pOut[0] = lr[2];
+        pOut[1] = lr[3];
+        pOut[2] = lr[0];
+        pOut[3] = lr[1];
     }
 
-    public void SEED_Decrypt(int[] pOut, int[] pIn, int[] rKey) {
-        int LR[] = new int[4];
-        int T[] = new int[2];
+    public void decrypt(int[] pOut, int[] pIn, int[] rKey) {
+        final int[] lr = new int[4];
+        final int[] t = new int[2];
 
-        LR[0] = pIn[0];
-        LR[1] = pIn[1];
-        LR[2] = pIn[2];
-        LR[3] = pIn[3];
+        lr[0] = pIn[0];
+        lr[1] = pIn[1];
+        lr[2] = pIn[2];
+        lr[3] = pIn[3];
 
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 30);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 28);
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 26);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 24);
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 22);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 20);
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 18);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 16);
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 14);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 12);
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 10);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 8);
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 6);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 4);
-        SeedRound(T, LR, 0, 1, 2, 3, rKey, 2);
-        SeedRound(T, LR, 2, 3, 0, 1, rKey, 0);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 30);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 28);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 26);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 24);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 22);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 20);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 18);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 16);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 14);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 12);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 10);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 8);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 6);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 4);
+        SeedRound(t, lr, 0, 1, 2, 3, rKey, 2);
+        SeedRound(t, lr, 2, 3, 0, 1, rKey, 0);
 
-        pOut[0] = LR[2];
-        pOut[1] = LR[3];
-        pOut[2] = LR[0];
-        pOut[3] = LR[1];
+        pOut[0] = lr[2];
+        pOut[1] = lr[3];
+        pOut[2] = lr[0];
+        pOut[3] = lr[1];
     }
 }

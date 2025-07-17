@@ -13,7 +13,7 @@ public class main {
 
         int keyLen = 0, inLen = 0, out1Len = 0, out2Len = 0, nonceLen = 0, aadLen = 0, macLen = 16;
 
-        print_title("Test SEED GCM - 1");
+        printTitle("Test SEED GCM - 1");
 
         keyLen = asc2hex(key, "1032F990B76B0686C0CF9BBB80AEE08C");
         nonceLen = asc2hex(nonce, "75E2534A34F65F85A28E318A");
@@ -22,22 +22,22 @@ public class main {
 
         macLen = 12;
 
-        out1Len = seed_gcm.SEED_GCM_Encryption(out1, in, inLen, macLen, nonce, nonceLen, aad, aadLen, key);
-        print_result("SEED GCM Encryption", out1Len);
+        out1Len = seed_gcm.encryption(out1, in, inLen, macLen, nonce, nonceLen, aad, aadLen, key);
+        printResult("SEED GCM Encryption", out1Len);
 
-        print_hex("key", key, keyLen);
-        print_hex("in", in, inLen);
-        print_hex("nonce", nonce, nonceLen);
-        print_hex("aad", aad, aadLen);
-        print_hex("out1", out1, out1Len);
+        printHex("key", key, keyLen);
+        printHex("in", in, inLen);
+        printHex("nonce", nonce, nonceLen);
+        printHex("aad", aad, aadLen);
+        printHex("out1", out1, out1Len);
 
-        out2Len = seed_gcm.SEED_GCM_Decryption(out2, out1, out1Len, macLen, nonce, nonceLen, aad, aadLen, key);
-        print_result("SEED GCM Decryption", out2Len);
+        out2Len = seed_gcm.decryption(out2, out1, out1Len, macLen, nonce, nonceLen, aad, aadLen, key);
+        printResult("SEED GCM Decryption", out2Len);
 
-        print_hex("in", out1, out1Len);
-        print_hex("out2", out2, out2Len);
+        printHex("in", out1, out1Len);
+        printHex("out2", out2, out2Len);
 
-        print_title("Test SEED CCM - 2");
+        printTitle("Test SEED CCM - 2");
 
         keyLen = asc2hex(key, "11B13AD70556009DA9D0A8A8C11E4199");
         nonceLen = asc2hex(nonce, "FC80175A2ADF87A8A96911CF207CAFB5");
@@ -46,20 +46,20 @@ public class main {
 
         macLen = 16;
 
-        out1Len = seed_gcm.SEED_GCM_Encryption(out1, in, inLen, macLen, nonce, nonceLen, aad, aadLen, key);
-        print_result("SEED GCM Encryption", out1Len);
+        out1Len = seed_gcm.encryption(out1, in, inLen, macLen, nonce, nonceLen, aad, aadLen, key);
+        printResult("SEED GCM Encryption", out1Len);
 
-        print_hex("key", key, keyLen);
-        print_hex("in", in, inLen);
-        print_hex("nonce", nonce, nonceLen);
-        print_hex("aad", aad, aadLen);
-        print_hex("out1", out1, out1Len);
+        printHex("key", key, keyLen);
+        printHex("in", in, inLen);
+        printHex("nonce", nonce, nonceLen);
+        printHex("aad", aad, aadLen);
+        printHex("out1", out1, out1Len);
 
-        out2Len = seed_gcm.SEED_GCM_Decryption(out2, out1, out1Len, macLen, nonce, nonceLen, aad, aadLen, key);
-        print_result("SEED GCM Decryption", out2Len);
+        out2Len = seed_gcm.decryption(out2, out1, out1Len, macLen, nonce, nonceLen, aad, aadLen, key);
+        printResult("SEED GCM Decryption", out2Len);
 
-        print_hex("in", out1, out1Len);
-        print_hex("out2", out2, out2Len);
+        printHex("in", out1, out1Len);
+        printHex("out2", out2, out2Len);
     }
 
     private static int asc2hex(byte[] dst, String src) {
@@ -88,7 +88,7 @@ public class main {
         return ((i + 1) / 2);
     }
 
-    private static void print_hex(String valName, byte[] data, int dataLen) {
+    private static void printHex(String valName, byte[] data, int dataLen) {
         int i = 0;
 
         System.out.printf("%s [%dbyte] :", valName, dataLen);
@@ -101,13 +101,13 @@ public class main {
         System.out.println("");
     }
 
-    private static void print_title(String title) {
+    private static void printTitle(String title) {
         System.out.println("================================================");
         System.out.println("  " + title);
         System.out.println("================================================");
     }
 
-    private static void print_result(String func, int ret) {
+    private static void printResult(String func, int ret) {
         if (ret == 1) {
             System.out.println("================================================");
             System.out.println("  " + func + " Failure!");
