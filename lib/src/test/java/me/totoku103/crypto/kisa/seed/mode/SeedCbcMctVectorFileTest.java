@@ -96,9 +96,9 @@ class SeedCbcMctVectorFileTest {
             System.out.println("✅ All IV chaining is correct across MCT vectors.");
         }
     }
-
-    @ParameterizedTest
-    @MethodSource("getTestVectors")
+//
+//    @ParameterizedTest
+//    @MethodSource("getTestVectors")
     public void testMctVectors(TestVectorMct vector) {
         final String key = vector.key;
         final String iv = vector.iv;

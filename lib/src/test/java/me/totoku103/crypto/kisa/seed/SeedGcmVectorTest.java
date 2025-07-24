@@ -2,11 +2,13 @@ package me.totoku103.crypto.kisa.seed;
 
 import me.totoku103.crypto.kisa.seed.mode.SeedGcm;
 import me.totoku103.crypto.utils.HexConverter;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,10 @@ class SeedGcmVectorTest {
 
     static Stream<TestVector> testVectors() throws IOException {
         final List<TestVector> vectors = new ArrayList<>();
-        final List<String> lines = Files.readAllLines(new File("/Users/totoku103/IdeaProjects/crypto-project/lib/src/test/java/me/totoku103/crypto/kisa/seed/data/gcm/GCM_SEED-128_AE.txt").toPath());
+        final URL resource = SeedGcmVectorTest.class.getResource("/testvectors/seedgcm/GCM_SEED-128_AE.txt");
+        Assertions.assertNotNull(resource);
+        final File file = new File(resource.getPath());
+        final List<String> lines = Files.readAllLines(file.toPath());
 
         TestVector current = null;
 
