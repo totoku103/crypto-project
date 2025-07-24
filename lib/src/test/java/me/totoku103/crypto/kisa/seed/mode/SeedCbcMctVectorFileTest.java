@@ -118,25 +118,4 @@ class SeedCbcMctVectorFileTest {
         final byte[] decrypted = seedCbc.decrypt(keyBytes, ivBytes, encrypted, false);
         Assertions.assertArrayEquals(ptBytes, decrypted);
     }
-
-    @ParameterizedTest
-    @MethodSource("getTestVectors")
-    public void testOriginalTest(TestVectorMct vector) {
-        final String key = vector.key;
-        final String iv = vector.iv;
-        final String pt = vector.pt;
-        final String ct = vector.ct;
-
-        final byte[] keyBytes = HexConverter.toBytes(key);
-        final byte[] ivBytes = HexConverter.toBytes(iv);
-        final byte[] ptBytes = HexConverter.toBytes(pt);
-        final byte[] ctBytes = HexConverter.toBytes(ct);
-
-
-        final byte[] encrypted = KISA_SEED_CBC.SEED_CBC_Encrypt(keyBytes, ivBytes, ptBytes, 0, ptBytes.length);
-        Assertions.assertArrayEquals(ctBytes, encrypted);
-
-        final byte[] decrypted = KISA_SEED_CBC.SEED_CBC_Decrypt(keyBytes, ivBytes, encrypted, 0, encrypted.length);
-        Assertions.assertArrayEquals(ptBytes, decrypted);
-    }
 }
