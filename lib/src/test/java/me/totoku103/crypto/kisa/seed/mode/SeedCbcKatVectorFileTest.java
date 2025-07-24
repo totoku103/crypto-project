@@ -9,7 +9,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -81,4 +84,26 @@ class SeedCbcKatVectorFileTest {
         final byte[] decrypted = seedCbc.decrypt(keyBytes, ivBytes, encrypted, false);
         Assertions.assertArrayEquals(ptBytes, decrypted);
     }
+
+    @Test
+    public void testSingleCase() {
+        final SecureRandom randomKey = new SecureRandom();
+        final byte[] keyBytes = new byte[16];
+        randomKey.nextBytes(keyBytes);
+
+        final SecureRandom randomIv = new SecureRandom();
+        final byte[] ivBytes = new byte[16];
+        randomIv.nextBytes(ivBytes);
+
+        final byte[] ptBytes = "안녕하세요".getBytes(StandardCharsets.UTF_8);
+
+
+        SeedCbc seedCbc = new SeedCbc();
+        final byte[] encrypted = seedCbc.encrypt(keyBytes, ivBytes, ptBytes, true);
+        System.out.println(Base64.getEncoder().encodeToString(encrypted));
+
+        final byte[] decrypted = seedCbc.decrypt(keyBytes, ivBytes, encrypted, true);
+        System.out.println(new String(decrypted, StandardCharsets.UTF_8));
+    }
+
 }
