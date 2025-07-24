@@ -1,9 +1,24 @@
 package me.totoku103.crypto.kisa.seed;
 
+import me.totoku103.crypto.kisa.seed.dto.EncryptGcmResult;
 import me.totoku103.crypto.kisa.seed.mode.SeedGcm;
 import me.totoku103.crypto.utils.HexConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Base64;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,5 +94,51 @@ class SeedGcmTest {
         final String decrypt = seedGcm.decrypt(mKey, encrypt, nonce, aad);
         System.out.println(decrypt);
         Assertions.assertEquals(plainText, decrypt);
+    }
+
+    @Test
+    public void simpleTestAddMissMatch() {
+        final String mKey = "ABCDEFGHIJKLMNOP";
+        final String plainText = "나랏말싸미듕귁에달아문자와로 서로 사맛디 아니할쎄 이런 전차로 어린 백셩이 니르고져 홀베이셔도";
+
+        final long epochSecond = LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toEpochSecond();
+        final int i = new Random().nextInt(9);
+        final String nonce = i + "" + epochSecond + i;
+
+        final String aad1 = "Additional Authenticated Data";
+        final String aad2 = "Additional Authenticated Datb";
+
+        final SeedGcm seedGcm = new SeedGcm();
+        final String encrypt = seedGcm.encrypt(mKey, plainText, nonce, aad1);
+        final String decrypt = seedGcm.decrypt(mKey, encrypt, nonce, aad2);
+        Assertions.assertNotEquals(plainText, decrypt);
+    }
+
+    @Test
+    public void testBase64() {
+        final String key = "Rd3PVzCG5Yr9vj7wBHf7AQ==";
+        final byte[] decode = Base64.getDecoder().decode(key);
+
+
+        final SecureRandom secureRandom2 = new SecureRandom();
+        final byte[] nonce = new byte[12];
+        secureRandom2.nextBytes(nonce);
+
+        final String plainText = "나랏말싸미듕귁에달아문자와로 서로 사맛디 아니할쎄 이런 전차로 어린 백셩이 니르고져 홀베이셔도";
+
+        final SeedGcm seedGcm = new SeedGcm();
+        final EncryptGcmResult encryptGcmResult = seedGcm.encryptBase64(decode, plainText, nonce, "Additional Authenticated Data".getBytes(StandardCharsets.UTF_8));
+        System.out.println(encryptGcmResult.toJson());
+
+        final SeedGcm seedGcm1 = new SeedGcm();
+        final String s = seedGcm1.decryptBase64(decode, encryptGcmResult.getCipherText(), encryptGcmResult.getNonce(), encryptGcmResult.getAad());
+        System.out.println(s);
+
+        Assertions.assertEquals(plainText, s);
+    }
+
+    @Test
+    public void testReuseNonceAndAdd() {
+
     }
 }

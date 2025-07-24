@@ -1,9 +1,11 @@
 package me.totoku103.crypto.kisa.seed.mode;
 
 import me.totoku103.crypto.kisa.seed.Seed;
+import me.totoku103.crypto.kisa.seed.dto.EncryptGcmResult;
 import me.totoku103.crypto.utils.HexConverter;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.logging.Logger;
 
 public class SeedGcm {
@@ -203,6 +205,38 @@ public class SeedGcm {
             throw new IllegalArgumentException("Key must be 16 bytes long for SEED GCM. [" + mKeyBytes.length + "] " + mKey);
         }
         return mKeyBytes;
+    }
+
+    public EncryptGcmResult encryptBase64(byte[] mKey, String plainText, byte[] nonce, byte[] aad) {
+        final byte[] plainTextBytes = plainText.getBytes(StandardCharsets.UTF_8);
+        final int textBytesLength = plainTextBytes.length;
+        final int macLen = this.BLOCK_SIZE_SEED;
+        final int nonceBytesLength = nonce.length;
+        final int addBytesLength = aad.length;
+        final byte[] buffer = new byte[textBytesLength + macLen];
+        final int encryptLength = encryptionGcm(buffer, plainTextBytes, textBytesLength, macLen, nonce, nonceBytesLength, aad, addBytesLength, mKey);
+        log.info("Encrypted length: " + encryptLength);
+        final String encryptBase64 = Base64.getEncoder().encodeToString(buffer);
+        log.info("Encrypted message (Base64): " + encryptBase64);
+
+        final EncryptGcmResult encryptGcmResult = new EncryptGcmResult();
+        encryptGcmResult.setAad(Base64.getEncoder().encodeToString(aad));
+        encryptGcmResult.setCipherText(encryptBase64);
+        encryptGcmResult.setNonce(Base64.getEncoder().encodeToString(nonce));
+        return encryptGcmResult;
+    }
+
+    public String decryptBase64(byte[] mKey, String encryptBase64, String nonceBase64, String aadBase64) {
+        final byte[] nonceBytes = Base64.getDecoder().decode(nonceBase64);
+        final byte[] aadBytes = Base64.getDecoder().decode(aadBase64);
+        final byte[] encryptBytes = Base64.getDecoder().decode(encryptBase64);
+        final int macLen = this.BLOCK_SIZE_SEED;
+        final byte[] buffer = new byte[encryptBytes.length - macLen];
+
+        final int decryptionLength = decryptionGcm(buffer, encryptBytes, encryptBytes.length, macLen, nonceBytes, nonceBytes.length, aadBytes, aadBytes.length, mKey);
+        log.info("Decrypted length: " + decryptionLength);
+
+        return new String(buffer, StandardCharsets.UTF_8);
     }
 
     public String encrypt(String mKey, String plainText, String nonce, String aad) {
