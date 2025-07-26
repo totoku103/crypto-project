@@ -10,51 +10,44 @@ public class KISA_HMAC {
     private final static int digestLength = 32;		// for SHA256
     
 	
-	public static void HMAC_SHA256_Transform(byte[] output, byte[] key, int keyLen, byte[] input, int inputLen) 
+	public static void HMAC_SHA256_Transform(byte[] output, byte[] key, int keyLen, byte[] input, int inputLen)
 	{
-		int keyLength = keyLen;
-		byte[] inputPad = new byte[blockLength];
-	    byte[] outputPad = new byte[blockLength];
-	    byte[] firstHash = new byte[digestLength];
-	    SHA256_INFO info = new SHA256_INFO();
-		
-	    KISA_SHA256.SHA256_Init( info );
-		if(keyLength > blockLength) {
-			
-			KISA_SHA256.SHA256_Process( info, key, keyLength );
-			KISA_SHA256.SHA256_Close( info, inputPad );
-			keyLength = digestLength;
-		}
-		else {
-			System.arraycopy(key, 0, inputPad, 0, keyLength);
-		}
-		
-		for (int i = keyLength; i < inputPad.length; i++)
-        {
-            inputPad[i] = 0;
-        }
-		
-		System.arraycopy(inputPad, 0, outputPad, 0, blockLength);
+		byte[] keyPad = new byte[blockLength];
 
-        xorPad(inputPad, blockLength, IPAD);
-        xorPad(outputPad, blockLength, OPAD);
-        
-	    KISA_SHA256.SHA256_Init( info );
-	    KISA_SHA256.SHA256_Process( info, inputPad, inputPad.length );
-	    KISA_SHA256.SHA256_Process( info, input, inputLen );
-	    KISA_SHA256.SHA256_Close( info, firstHash );
-	    
-	    KISA_SHA256.SHA256_Init( info );
-	    KISA_SHA256.SHA256_Process( info, outputPad, outputPad.length );
-	    KISA_SHA256.SHA256_Process( info, firstHash, digestLength );
-	    KISA_SHA256.SHA256_Close( info, output );
+		// 1. Key Processing
+		if (keyLen > blockLength) {
+			SHA256_INFO info = new SHA256_INFO();
+			KISA_SHA256.SHA256_Init(info);
+			KISA_SHA256.SHA256_Process(info, key, keyLen);
+			KISA_SHA256.SHA256_Close(info, keyPad);
+		} else {
+			System.arraycopy(key, 0, keyPad, 0, keyLen);
+		}
+
+		// 2. Inner and Outer Pads
+		byte[] ipad = new byte[blockLength];
+		byte[] opad = new byte[blockLength];
+		for (int i = 0; i < blockLength; i++) {
+			ipad[i] = (byte) (keyPad[i] ^ IPAD);
+			opad[i] = (byte) (keyPad[i] ^ OPAD);
+		}
+
+		// 3. Inner Hash
+		SHA256_INFO context = new SHA256_INFO();
+		KISA_SHA256.SHA256_Init(context);
+		KISA_SHA256.SHA256_Process(context, ipad, blockLength);
+		KISA_SHA256.SHA256_Process(context, input, inputLen);
+		byte[] firstHash = new byte[digestLength];
+		KISA_SHA256.SHA256_Close(context, firstHash);
+
+		// 4. Outer Hash
+		KISA_SHA256.SHA256_Init(context);
+		KISA_SHA256.SHA256_Process(context, opad, blockLength);
+		KISA_SHA256.SHA256_Process(context, firstHash, digestLength);
+		byte[] fullMac = new byte[digestLength];
+		KISA_SHA256.SHA256_Close(context, fullMac);
+
+		// 5. Truncate to desired length
+		System.arraycopy(fullMac, 0, output, 0, output.length);
 	}
-	
-	private static void xorPad(byte[] pad, int len, byte n)
-    {
-        for (int i = 0; i < len; ++i)
-        {
-            pad[i] ^= n;
-        }
-    }
 }

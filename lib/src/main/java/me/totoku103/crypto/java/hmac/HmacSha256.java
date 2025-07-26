@@ -46,9 +46,6 @@ public class HmacSha256 {
             mac.init(keySpec);
             mac.update(input, 0, inLen);
             final byte[] result = mac.doFinal();
-            if (result.length != outLen) {
-                return PARAMETER_ERROR;
-            }
             System.arraycopy(result, 0, output, 0, outLen);
             return OK;
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {

@@ -93,7 +93,7 @@ class KISA_HMACTest_2 {
 
         final byte[] output = new byte[vector.tLen];
 
-        KISA_HMAC.HMAC_SHA256_Transform(output, keyBytes, vector.kLen, messageBytes, messageBytes.length);
+        KISA_HMAC.HMAC_SHA256_Transform(output, keyBytes, keyBytes.length, messageBytes, messageBytes.length);
         final String s = HexConverter.fromBytes(output);
         Utils.print_hex("output", output, output.length);
         Assertions.assertArrayEquals(ctBytes, output);
