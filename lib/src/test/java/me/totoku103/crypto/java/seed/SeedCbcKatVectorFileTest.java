@@ -1,7 +1,7 @@
 package me.totoku103.crypto.java.seed;
 
 import me.totoku103.crypto.enums.SeedCbcTransformations;
-import me.totoku103.crypto.utils.HexConverter;
+import me.totoku103.crypto.core.utils.ByteUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -71,10 +71,10 @@ class SeedCbcKatVectorFileTest {
         final String pt = vector.pt;
         final String ct = vector.ct;
 
-        final byte[] keyBytes = HexConverter.toBytes(key);
-        final byte[] ivBytes = HexConverter.toBytes(iv);
-        final byte[] ptBytes = HexConverter.toBytes(pt);
-        final byte[] ctBytes = HexConverter.toBytes(ct);
+        final byte[] keyBytes = ByteUtils.fromHexString(key);
+        final byte[] ivBytes = ByteUtils.fromHexString(iv);
+        final byte[] ptBytes = ByteUtils.fromHexString(pt);
+        final byte[] ctBytes = ByteUtils.fromHexString(ct);
 
         final SeedCbc seedCbc = new SeedCbc(SeedCbcTransformations.SEED_CBC_NO_PADDING);
         final byte[] encrypt = seedCbc.encrypt(ptBytes, keyBytes, ivBytes);
@@ -103,7 +103,7 @@ class SeedCbcKatVectorFileTest {
         final SeedCbc seedCbc1 = new SeedCbc(SeedCbcTransformations.SEED_CBC_PKCS7_PADDING);
         final byte[] encrypt = seedCbc1.encrypt(pt.getBytes(StandardCharsets.UTF_8), seedKey.getEncoded(), securityIv.getIV());
         final String base64Encrypt = Base64.getEncoder().encodeToString(encrypt);
-        System.out.println(HexConverter.fromBytes(encrypt));
+        System.out.println(ByteUtils.toHexString(encrypt));
         System.out.println(base64Encrypt);
 
 

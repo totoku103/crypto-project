@@ -2,15 +2,15 @@ package me.totoku103.crypto.kisa.aria.mode;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import me.totoku103.crypto.utils.HexConverter;
+import me.totoku103.crypto.core.utils.ByteUtils;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class AriaModesTest {
   private static final byte[] KEY =
-      HexConverter.toBytes("00112233445566778899aabbccddeeff0011223344556677");
-  private static final byte[] IV = HexConverter.toBytes("0f1e2d3c4b5a69788796a5b4");
+      ByteUtils.fromHexString("00112233445566778899aabbccddeeff0011223344556677");
+  private static final byte[] IV = ByteUtils.fromHexString("0f1e2d3c4b5a69788796a5b4");
   private static final byte[] AAD = "header".getBytes();
 
   @Test

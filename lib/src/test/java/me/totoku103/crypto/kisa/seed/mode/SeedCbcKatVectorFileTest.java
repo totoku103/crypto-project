@@ -9,7 +9,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Stream;
-import me.totoku103.crypto.utils.HexConverter;
+import me.totoku103.crypto.core.utils.ByteUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -67,10 +67,10 @@ class SeedCbcKatVectorFileTest {
     final String pt = vector.pt;
     final String ct = vector.ct;
 
-    final byte[] keyBytes = HexConverter.toBytes(key);
-    final byte[] ivBytes = HexConverter.toBytes(iv);
-    final byte[] ptBytes = HexConverter.toBytes(pt);
-    final byte[] ctBytes = HexConverter.toBytes(ct);
+    final byte[] keyBytes = ByteUtils.fromHexString(key);
+    final byte[] ivBytes = ByteUtils.fromHexString(iv);
+    final byte[] ptBytes = ByteUtils.fromHexString(pt);
+    final byte[] ctBytes = ByteUtils.fromHexString(ct);
 
     SeedCbc seedCbc = new SeedCbc();
     final byte[] encrypted = seedCbc.encrypt(keyBytes, ivBytes, ptBytes, false);

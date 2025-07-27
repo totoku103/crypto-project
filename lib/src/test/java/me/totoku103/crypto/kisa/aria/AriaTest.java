@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.security.InvalidKeyException;
 import java.util.stream.Stream;
-import me.totoku103.crypto.utils.HexConverter;
+import me.totoku103.crypto.core.utils.ByteUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,15 +40,15 @@ class AriaTest {
 
     for (String[] v : vectors) {
       final int keySize = Integer.parseInt(v[0]);
-      final byte[] key = HexConverter.toBytes(v[1]);
-      final byte[] plain = HexConverter.toBytes(v[2]);
-      final byte[] expected = HexConverter.toBytes(v[3]);
+      final byte[] key = ByteUtils.fromHexString(v[1]);
+      final byte[] plain = ByteUtils.fromHexString(v[2]);
+      final byte[] expected = ByteUtils.fromHexString(v[3]);
 
       final Aria aria = new Aria(keySize);
       aria.setKey(key);
       aria.setupRoundKeys();
       final byte[] enc = aria.encrypt(plain, 0);
-      assertEquals(HexConverter.fromBytes(expected), HexConverter.fromBytes(enc));
+      assertEquals(ByteUtils.toHexString(expected), ByteUtils.toHexString(enc));
 
       final byte[] dec = aria.decrypt(enc, 0);
       assertArrayEquals(plain, dec);
@@ -87,10 +87,10 @@ class AriaTest {
   void roundTripMatchesOfficialEcbVectors(int keySize, String keyHex, String ptHex, String ctHex)
       throws InvalidKeyException {
     Aria aria = new Aria(keySize);
-    aria.setKey(HexConverter.toBytes(keyHex));
+    aria.setKey(ByteUtils.fromHexString(keyHex));
 
-    byte[] plaintext = HexConverter.toBytes(ptHex);
-    byte[] expectedCipher = HexConverter.toBytes(ctHex);
+    byte[] plaintext = ByteUtils.fromHexString(ptHex);
+    byte[] expectedCipher = ByteUtils.fromHexString(ctHex);
 
     byte[] actualCipher = aria.encrypt(plaintext, 0);
     assertArrayEquals(expectedCipher, actualCipher, "Ciphertext does not match specification");

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import me.totoku103.crypto.kisa.seed.mode.SeedGcm;
-import me.totoku103.crypto.utils.HexConverter;
+import me.totoku103.crypto.core.utils.ByteUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -67,11 +67,11 @@ class SeedGcmVectorTest {
   @ParameterizedTest
   @MethodSource("testVectors")
   public void vectorTest(TestVector testVector) {
-    byte[] key = HexConverter.toBytes(testVector.key);
-    byte[] iv = HexConverter.toBytes(testVector.iv);
-    byte[] aad = HexConverter.toBytes(testVector.adata); // 추가 인증 데이터
-    byte[] pt = HexConverter.toBytes(testVector.pt); // 평문
-    byte[] expectedTag = HexConverter.toBytes(testVector.t);
+    byte[] key = ByteUtils.fromHexString(testVector.key);
+    byte[] iv = ByteUtils.fromHexString(testVector.iv);
+    byte[] aad = ByteUtils.fromHexString(testVector.adata); // 추가 인증 데이터
+    byte[] pt = ByteUtils.fromHexString(testVector.pt); // 평문
+    byte[] expectedTag = ByteUtils.fromHexString(testVector.t);
     int macLen = 16;
 
     final SeedGcm seedGcm = new SeedGcm();

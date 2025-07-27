@@ -3,7 +3,7 @@ package me.totoku103.crypto.java.sha2;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.charset.StandardCharsets;
-import me.totoku103.crypto.utils.HexConverter;
+import me.totoku103.crypto.core.utils.ByteUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ class Sha256Test {
     final String plainText = "abc";
     final byte[] plainBytes = plainText.getBytes(StandardCharsets.UTF_8);
     final byte[] expectedHash =
-        HexConverter.toBytes("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+        ByteUtils.fromHexString("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
 
     final byte[] actualHash = sha256.toHash(plainBytes);
 
@@ -67,7 +67,7 @@ class Sha256Test {
     final String plainText = "abc";
     final byte[] plainBytes = plainText.getBytes(StandardCharsets.UTF_8);
     final byte[] expectedHash =
-        HexConverter.toBytes("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+        ByteUtils.fromHexString("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
     final byte[] outputBuffer = new byte[32];
 
     final int result =

@@ -1,7 +1,7 @@
 package me.totoku103.crypto.kisa.aria;
 
 import java.security.InvalidKeyException;
-import me.totoku103.crypto.utils.HexConverter;
+import me.totoku103.crypto.core.utils.ByteUtils;
 
 public final class SimpleAria extends Aria {
 
@@ -9,26 +9,26 @@ public final class SimpleAria extends Aria {
 
   public SimpleAria(final int keySize, final String key) throws InvalidKeyException {
     super(keySize);
-    this.key = HexConverter.toBytes(key);
+    this.key = ByteUtils.fromHexString(key);
     super.setKey(this.key);
     super.setupRoundKeys();
   }
 
   public String getKey() {
-    return HexConverter.fromBytes(this.key);
+    return ByteUtils.toHexString(this.key);
   }
 
   public String encryptEcb(final String plain) throws InvalidKeyException {
-    final String hex = HexConverter.fromString(plain);
-    final byte[] plainBytes = HexConverter.toBytes(hex);
+    final String hex = ByteUtils.stringToHex(plain);
+    final byte[] plainBytes = ByteUtils.fromHexString(hex);
     final byte[] encrypted = encrypt(plainBytes, 0);
-    return HexConverter.fromBytes(encrypted);
+    return ByteUtils.toHexString(encrypted);
   }
 
   public String decryptEcb(final String cipher) throws InvalidKeyException {
-    final byte[] cipherBytes = HexConverter.toBytes(cipher);
+    final byte[] cipherBytes = ByteUtils.fromHexString(cipher);
     final byte[] decrypted = decrypt(cipherBytes, 0);
-    final String hex = HexConverter.fromBytes(decrypted);
-    return HexConverter.toString(hex);
+    final String hex = ByteUtils.toHexString(decrypted);
+    return ByteUtils.hexToString(hex);
   }
 }

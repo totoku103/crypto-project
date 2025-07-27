@@ -3,7 +3,7 @@ package me.totoku103.crypto.java.hmac;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.charset.StandardCharsets;
-import me.totoku103.crypto.utils.HexConverter;
+import me.totoku103.crypto.core.utils.ByteUtils;
 import org.junit.jupiter.api.*;
 
 class HmacSha256Test {
@@ -29,7 +29,7 @@ class HmacSha256Test {
     java.util.Arrays.fill(key, (byte) 0x0b);
     byte[] data = "Hi There".getBytes(StandardCharsets.UTF_8);
     byte[] expected =
-        HexConverter.toBytes("b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7");
+        ByteUtils.fromHexString("b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7");
     byte[] out = new byte[32];
 
     int rc = hmac.hmacSha256(out, out.length, key, key.length, data, data.length);
@@ -45,7 +45,7 @@ class HmacSha256Test {
     byte[] data =
         "what do ya want for nothing?".getBytes(java.nio.charset.StandardCharsets.UTF_8);
     byte[] expected =
-        HexConverter.toBytes("5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843");
+        ByteUtils.fromHexString("5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843");
     byte[] out = new byte[32];
 
     int rc = hmac.hmacSha256(out, out.length, key, key.length, data, data.length);
@@ -62,7 +62,7 @@ class HmacSha256Test {
     byte[] data = new byte[50];
     java.util.Arrays.fill(data, (byte) 0xdd);
     byte[] expected =
-        HexConverter.toBytes("773ea91e36800e46854db8ebd09181a72959098b3ef8c122d9635514ced565fe");
+        ByteUtils.fromHexString("773ea91e36800e46854db8ebd09181a72959098b3ef8c122d9635514ced565fe");
     byte[] out = new byte[32];
 
     int rc = hmac.hmacSha256(out, out.length, key, key.length, data, data.length);
@@ -81,7 +81,7 @@ class HmacSha256Test {
     byte[] data = new byte[50];
     java.util.Arrays.fill(data, (byte) 0xcd);
     byte[] expected =
-        HexConverter.toBytes("82558a389a443c0ea4cc819899f2083a85f0faa3e578f8077a2e3ff46729665b");
+        ByteUtils.fromHexString("82558a389a443c0ea4cc819899f2083a85f0faa3e578f8077a2e3ff46729665b");
     byte[] out = new byte[32];
 
     int rc = hmac.hmacSha256(out, out.length, key, key.length, data, data.length);

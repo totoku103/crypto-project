@@ -3,7 +3,7 @@ package me.totoku103.crypto.kisa.sha2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.charset.StandardCharsets;
-import me.totoku103.crypto.utils.HexConverter;
+import me.totoku103.crypto.core.utils.ByteUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ public class Sha512Test {
     final byte[] out = Sha512.toHash(input);
     assertEquals(
         "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f",
-        HexConverter.fromBytes(out));
+        ByteUtils.toHexString(out));
   }
 
   @Test
@@ -26,7 +26,7 @@ public class Sha512Test {
     final byte[] out = Sha512.toHash(input);
     assertEquals(
         "075789001ce21770acbc8cd62fc1893e15a00cbc25640e08f51c5c85116dc5b1be72af82d543c3675a2e66a21c7f954feb54c3d25e6b24afe0dba42b2f563914",
-        HexConverter.fromBytes(out));
+        ByteUtils.toHexString(out));
   }
 
   @Test

@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.charset.StandardCharsets;
-import me.totoku103.crypto.utils.HexConverter;
+import me.totoku103.crypto.core.utils.ByteUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ class Sha256Test {
     final String plainText = "abc";
     final byte[] plainBytes = plainText.getBytes(StandardCharsets.UTF_8);
     final byte[] expectedHash =
-        HexConverter.toBytes("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+        ByteUtils.fromHexString("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
     final byte[] actualHash = new byte[32];
 
     Sha256.encrypt(plainBytes, plainBytes.length, actualHash);

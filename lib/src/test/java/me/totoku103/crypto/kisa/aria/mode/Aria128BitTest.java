@@ -2,7 +2,7 @@ package me.totoku103.crypto.kisa.aria.mode;
 
 import java.security.InvalidKeyException;
 import me.totoku103.crypto.kisa.aria.SimpleAria;
-import me.totoku103.crypto.utils.HexConverter;
+import me.totoku103.crypto.core.utils.ByteUtils;
 import org.junit.jupiter.api.Test;
 
 public class Aria128BitTest {
@@ -21,7 +21,7 @@ public class Aria128BitTest {
   @Test
   public void test() {
     final String hex = "11111111aaaaaaaa11111111bbbbbbbb";
-    final byte[] bytes = HexConverter.toBytes(hex);
+    final byte[] bytes = ByteUtils.fromHexString(hex);
     System.out.println(new String(bytes));
   }
 }
