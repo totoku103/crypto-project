@@ -1,7 +1,7 @@
 package me.totoku103.crypto.java.seed;
 
-import me.totoku103.crypto.enums.SeedCbcTransformations;
 import me.totoku103.crypto.core.utils.ByteUtils;
+import me.totoku103.crypto.enums.SeedCbcTransformations;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;

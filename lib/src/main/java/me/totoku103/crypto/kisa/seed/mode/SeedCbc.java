@@ -1,7 +1,7 @@
 package me.totoku103.crypto.kisa.seed.mode;
 
-import me.totoku103.crypto.kisa.seed.Seed;
 import me.totoku103.crypto.core.utils.ByteUtils;
+import me.totoku103.crypto.kisa.seed.Seed;
 
 public class SeedCbc {
 

@@ -1,12 +1,13 @@
 package me.totoku103.crypto.kisa.aria;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.security.InvalidKeyException;
 import me.totoku103.crypto.core.utils.ByteUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.security.InvalidKeyException;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AriaCasesTest {
 

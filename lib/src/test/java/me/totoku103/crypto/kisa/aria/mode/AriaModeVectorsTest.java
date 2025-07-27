@@ -2,7 +2,6 @@ package me.totoku103.crypto.kisa.aria.mode;
 
 import me.totoku103.crypto.core.utils.ByteUtils;
 import me.totoku103.crypto.kisa.aria.AriaBcBlockCipher;
-import me.totoku103.crypto.legacy.utils.PaddingUtils;
 import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.junit.jupiter.api.Assertions;

@@ -1,10 +1,11 @@
 package me.totoku103.crypto.kisa.sha3;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Sha3Test {
 

@@ -14,7 +14,7 @@ package me.totoku103.crypto.kisa.aria;
 
 import java.io.PrintStream;
 import java.security.InvalidKeyException;
-import java.util.*;
+import java.util.Date;
 
 public class Aria {
   private static final char[] HEX_DIGITS = {

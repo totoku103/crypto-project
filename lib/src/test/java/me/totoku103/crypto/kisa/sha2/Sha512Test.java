@@ -1,11 +1,12 @@
 package me.totoku103.crypto.kisa.sha2;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.nio.charset.StandardCharsets;
 import me.totoku103.crypto.core.utils.ByteUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Sha512Test {
 

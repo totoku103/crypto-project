@@ -1,9 +1,9 @@
 package me.totoku103.crypto.kisa.seed.mode;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 class SeedEcbTest {
 
