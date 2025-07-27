@@ -1,8 +1,8 @@
 package me.totoku103.crypto.core.utils;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /** ByteUtils 클래스의 모든 기능을 테스트합니다. */
 class ByteUtilsTest {

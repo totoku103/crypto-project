@@ -1,8 +1,5 @@
 package me.totoku103.crypto.core;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.security.InvalidKeyException;
 import me.totoku103.crypto.algorithms.cipher.AriaBlockCipher;
 import me.totoku103.crypto.algorithms.cipher.SeedBlockCipher;
 import me.totoku103.crypto.algorithms.hash.Sha256Jdk;
@@ -10,6 +7,11 @@ import me.totoku103.crypto.algorithms.hash.Sha256Kisa;
 import me.totoku103.crypto.core.factory.CryptoFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.security.InvalidKeyException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /** 예외 처리 테스트 클래스 */
 @DisplayName("예외 처리 테스트")

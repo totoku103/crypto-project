@@ -1,7 +1,8 @@
 package me.totoku103.crypto.kisa.seed.mode;
 
-import java.nio.charset.StandardCharsets;
 import me.totoku103.crypto.core.utils.ByteUtils;
+
+import java.nio.charset.StandardCharsets;
 
 public class SeedEcb {
   private static final int ENDIAN = Common.BIG_ENDIAN;

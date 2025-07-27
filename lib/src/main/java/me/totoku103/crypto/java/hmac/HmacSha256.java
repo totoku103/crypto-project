@@ -1,9 +1,9 @@
 package me.totoku103.crypto.java.hmac;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 /** HMAC using SHA-256 via JDK {@link javax.crypto.Mac}. */
 public final class HmacSha256 {

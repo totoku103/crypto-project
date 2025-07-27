@@ -1,8 +1,8 @@
 package me.totoku103.crypto.algorithms.hash;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /** Sha256Jdk 알고리즘을 테스트합니다. */
 class Sha256JdkTest {

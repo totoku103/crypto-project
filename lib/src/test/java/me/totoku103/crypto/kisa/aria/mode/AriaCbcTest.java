@@ -1,13 +1,14 @@
 package me.totoku103.crypto.kisa.aria.mode;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-
-import java.util.stream.Stream;
 import me.totoku103.crypto.core.utils.ByteUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class AriaCbcTest {
   private static final byte[] IV = ByteUtils.fromHexString("0f1e2d3c4b5a69788796a5b4c3d2e1f0");

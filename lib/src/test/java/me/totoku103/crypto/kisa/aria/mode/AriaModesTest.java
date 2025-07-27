@@ -1,11 +1,11 @@
 package me.totoku103.crypto.kisa.aria.mode;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-
 import me.totoku103.crypto.core.utils.ByteUtils;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 class AriaModesTest {
   private static final byte[] KEY =

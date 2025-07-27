@@ -1,9 +1,10 @@
 package me.totoku103.crypto.algorithms.cipher;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import java.security.InvalidKeyException;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /** SeedBlockCipher 알고리즘을 테스트합니다. */
 class SeedBlockCipherTest {

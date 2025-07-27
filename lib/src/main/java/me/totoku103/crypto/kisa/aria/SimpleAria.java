@@ -1,7 +1,8 @@
 package me.totoku103.crypto.kisa.aria;
 
-import java.security.InvalidKeyException;
 import me.totoku103.crypto.core.utils.ByteUtils;
+
+import java.security.InvalidKeyException;
 
 public final class SimpleAria extends Aria {
 

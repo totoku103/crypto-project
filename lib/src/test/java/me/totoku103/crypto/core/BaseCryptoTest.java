@@ -1,9 +1,9 @@
 package me.totoku103.crypto.core;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import me.totoku103.crypto.core.utils.ByteUtils;
 import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /** 모든 암호화 테스트의 기본 클래스 공통 테스트 데이터와 유틸리티 메서드를 제공합니다. */
 public abstract class BaseCryptoTest {

@@ -1,12 +1,13 @@
 package me.totoku103.crypto.java.seed;
 
-import java.security.GeneralSecurityException;
-import java.security.Security;
+import me.totoku103.crypto.enums.SeedCbcTransformations;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import me.totoku103.crypto.enums.SeedCbcTransformations;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import java.security.GeneralSecurityException;
+import java.security.Security;
 
 /**
  * Provides SEED encryption and decryption in CBC mode.
