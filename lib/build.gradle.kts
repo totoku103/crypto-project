@@ -8,15 +8,8 @@
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
-    id("com.diffplug.spotless") version "7.2.1"
 }
 
-spotless {
-    java {
-        // Use the default Google Java Format.
-        googleJavaFormat()
-    }
-}
 
 repositories {
     // Use Maven Central for resolving dependencies.
