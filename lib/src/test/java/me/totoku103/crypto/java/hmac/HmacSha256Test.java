@@ -41,9 +41,9 @@ class HmacSha256Test {
   @DisplayName("RFC 4231 테스트 벡터 #2 검증")
   void testVector2() {
     Assumptions.assumeTrue(HmacSha256.isHmacSha256Available());
-    byte[] key = "Jefe".getBytes(java.nio.charset.StandardCharsets.US_ASCII);
+    byte[] key = "Jefe".getBytes(java.nio.charset.StandardCharsets.UTF_8);
     byte[] data =
-        "what do ya want for nothing?".getBytes(java.nio.charset.StandardCharsets.US_ASCII);
+        "what do ya want for nothing?".getBytes(java.nio.charset.StandardCharsets.UTF_8);
     byte[] expected =
         HexConverter.toBytes("5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843");
     byte[] out = new byte[32];

@@ -6,6 +6,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import me.totoku103.crypto.enums.SeedCbcTransformations;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
@@ -17,20 +18,19 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public final class SeedCbc {
 
     private static final String ALGORITHM = "SEED";
-    private static final String TRANSFORMATION = "SEED/CBC/NoPadding";
-//    private static final String TRANSFORMATION = "SEED/CBC/PKCS5Padding";
     private static final int IV_LENGTH = 16; // 128 bits
     private static final int KEY_LENGTH = 16; // 128 bits
 
+    private final String TRANSFORMATION;
+
     static {
-        // Statically register the Bouncy Castle provider if not already registered.
         if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
             Security.addProvider(new BouncyCastleProvider());
         }
     }
 
-    // Private constructor to prevent instantiation of this utility class.
-    private SeedCbc() {
+    public SeedCbc(SeedCbcTransformations transformations) {
+        this.TRANSFORMATION = transformations.getValue();
     }
 
     /**
@@ -43,7 +43,7 @@ public final class SeedCbc {
      * @throws IllegalArgumentException if the key or IV is invalid.
      * @throws IllegalStateException    if an error occurs during encryption.
      */
-    public static byte[] encrypt(final byte[] plainText, final byte[] key, final byte[] iv) {
+    public byte[] encrypt(final byte[] plainText, final byte[] key, final byte[] iv) {
         if (key == null || key.length != KEY_LENGTH) {
             throw new IllegalArgumentException("Key must be 16 bytes.");
         }
@@ -58,7 +58,6 @@ public final class SeedCbc {
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
             return cipher.doFinal(plainText);
         } catch (GeneralSecurityException e) {
-            // Wrap checked exceptions in a runtime exception for convenience.
             throw new IllegalStateException("Encryption failed", e);
         }
     }
@@ -73,7 +72,7 @@ public final class SeedCbc {
      * @throws IllegalArgumentException if the key or IV is invalid.
      * @throws IllegalStateException    if an error occurs during decryption.
      */
-    public static byte[] decrypt(final byte[] cipherText, final byte[] key, final byte[] iv) {
+    public byte[] decrypt(final byte[] cipherText, final byte[] key, final byte[] iv) {
         if (key == null || key.length != KEY_LENGTH) {
             throw new IllegalArgumentException("Key must be 16 bytes.");
         }
@@ -88,7 +87,6 @@ public final class SeedCbc {
             cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
             return cipher.doFinal(cipherText);
         } catch (GeneralSecurityException e) {
-            // Wrap checked exceptions in a runtime exception for convenience.
             throw new IllegalStateException("Decryption failed", e);
         }
     }

@@ -1,15 +1,21 @@
 package me.totoku103.crypto.java.seed;
 
-import me.totoku103.crypto.java.seed.SeedCbc;
+import me.totoku103.crypto.enums.SeedCbcTransformations;
 import me.totoku103.crypto.utils.HexConverter;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -70,12 +76,42 @@ class SeedCbcKatVectorFileTest {
         final byte[] ptBytes = HexConverter.toBytes(pt);
         final byte[] ctBytes = HexConverter.toBytes(ct);
 
-
-        final byte[] encrypt = SeedCbc.encrypt(ptBytes, keyBytes, ivBytes);
+        final SeedCbc seedCbc = new SeedCbc(SeedCbcTransformations.SEED_CBC_NO_PADDING);
+        final byte[] encrypt = seedCbc.encrypt(ptBytes, keyBytes, ivBytes);
         Assertions.assertArrayEquals(ctBytes, encrypt);
 
-        final byte[] decrypt = SeedCbc.decrypt(encrypt, keyBytes, ivBytes);
+        final byte[] decrypt = seedCbc.decrypt(encrypt, keyBytes, ivBytes);
         Assertions.assertArrayEquals(ptBytes, decrypt);
+    }
+
+    @Test
+    public void testKatVectors2() {
+        final SecureRandom keyRandom = new SecureRandom();
+        final byte[] keyBytes = new byte[16];
+        keyRandom.nextBytes(keyBytes);
+        final SecretKeySpec seedKey = new SecretKeySpec(keyBytes, "SEED");
+
+
+        final SecureRandom ivRandom = new SecureRandom();
+        final byte[] ivBytes = new byte[16];
+        ivRandom.nextBytes(ivBytes);
+        final IvParameterSpec securityIv = new IvParameterSpec(ivBytes);
+
+        final String pt = "가나다라마바사아자차카타파하 동해물과 백두산이 마르고 닳도록";
+
+
+        final SeedCbc seedCbc1 = new SeedCbc(SeedCbcTransformations.SEED_CBC_PKCS7_PADDING);
+        final byte[] encrypt = seedCbc1.encrypt(pt.getBytes(StandardCharsets.UTF_8), seedKey.getEncoded(), securityIv.getIV());
+        final String base64Encrypt = Base64.getEncoder().encodeToString(encrypt);
+        System.out.println(HexConverter.fromBytes(encrypt));
+        System.out.println(base64Encrypt);
+
+
+        final byte[] decode = Base64.getDecoder().decode(base64Encrypt);
+        final SeedCbc seedCbc2 = new SeedCbc(SeedCbcTransformations.SEED_CBC_PKCS7_PADDING);
+        final byte[] decrypt = seedCbc2.decrypt(decode, seedKey.getEncoded(), securityIv.getIV());
+
+        System.out.println(new String(decrypt));
     }
 
 }

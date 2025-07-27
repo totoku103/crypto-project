@@ -1,5 +1,6 @@
 package me.totoku103.crypto.java.seed;
 
+import me.totoku103.crypto.enums.SeedCbcTransformations;
 import me.totoku103.crypto.utils.HexConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -69,10 +70,11 @@ class SeedCbcMmtVectorFileTest {
         final byte[] ptBytes = HexConverter.toBytes(pt);
         final byte[] ctBytes = HexConverter.toBytes(ct);
 
-        final byte[] encrypted = SeedCbc.encrypt(ptBytes, keyBytes, ivBytes);
+        final SeedCbc seedCbc = new SeedCbc(SeedCbcTransformations.SEED_CBC_NO_PADDING);
+        final byte[] encrypted = seedCbc.encrypt(ptBytes, keyBytes, ivBytes);
         Assertions.assertArrayEquals(ctBytes, encrypted);
 
-        final byte[] decrypted = SeedCbc.decrypt(encrypted, keyBytes, ivBytes);
+        final byte[] decrypted = seedCbc.decrypt(encrypted, keyBytes, ivBytes);
         Assertions.assertArrayEquals(ptBytes, decrypted);
     }
 }
