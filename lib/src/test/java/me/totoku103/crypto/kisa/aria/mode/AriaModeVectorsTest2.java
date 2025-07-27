@@ -1,5 +1,7 @@
 package me.totoku103.crypto.kisa.aria.mode;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import me.totoku103.crypto.core.utils.ByteUtils;
 import me.totoku103.crypto.kisa.aria.AriaBcBlockCipher;
 import org.bouncycastle.crypto.BlockCipher;
@@ -7,8 +9,6 @@ import org.bouncycastle.crypto.params.KeyParameter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class AriaModeVectorsTest2 {
   private static final byte[] KEY = ByteUtils.fromHexString("00112233445566778899aabbccddeeff");

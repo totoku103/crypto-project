@@ -1,68 +1,50 @@
 # Crypto Project
 
-한국 표준 암호화 알고리즘을 구현한 Java 라이브러리입니다.
+## 소개
 
-## 구조
+이 프로젝트는 다양한 암호화 알고리즘(해시, 블록암호 등)을 SOLID 원칙에 따라 구조화하여, 확장성과 유지보수성을 극대화한 Java 암호화 라이브러리입니다.
 
-### 새로운 아키텍처
+- **SOLID 원칙** 기반의 구조
+- **팩토리 패턴**으로 알고리즘 생성
+- **유틸리티 통합**: `ByteUtils` 중심
+- **테스트 코드**: 통합/단위/예외/경계/성능 테스트 체계
+- **레거시 호환**: 기존 KISA/JDK 구현과의 호환성 유지
+
+---
+
+## 프로젝트 구조
 
 ```
-me.totoku103.crypto/
-├── core/                    # 핵심 인터페이스 및 추상 클래스
-│   ├── CryptoAlgorithm.java
-│   ├── BlockCipher.java
-│   ├── HashAlgorithm.java
-│   ├── AbstractHashAlgorithm.java
-│   ├── factory/             # 팩토리 패턴
-│   │   └── CryptoFactory.java
-│   ├── utils/               # 통합 유틸리티 클래스
-│   │   └── ByteUtils.java   # 16진수 변환, 패딩, 바이트 조작
-│   └── exception/           # 예외 처리
-│       └── CryptoException.java
-├── algorithms/              # 알고리즘 구현
-│   ├── hash/                # 해시 알고리즘
-│   │   ├── Sha256Jdk.java
-│   │   └── Sha256Kisa.java
-│   └── cipher/              # 블록 암호화 알고리즘
-│       ├── SeedBlockCipher.java
-│       └── AriaBlockCipher.java
-├── example/                 # 사용 예제
-│   └── CryptoExample.java
-└── legacy/                  # 기존 구현 (하위 호환성)
-    ├── java/
-    └── kisa/
+lib/src/main/java/me/totoku103/crypto/
+  core/           # 인터페이스, 추상클래스, 팩토리, 예외, 유틸리티
+  algorithms/     # SOLID 기반 알고리즘 구현 (hash, cipher)
+  kisa/           # KISA 레거시 구현
+  java/           # JDK 레거시 구현
+  legacy/         # 이전 HexConverter, PaddingUtils 등
 ```
 
-## SOLID 원칙 적용
+### 주요 클래스
+- `core/CryptoAlgorithm`, `BlockCipher`, `HashAlgorithm`: 핵심 인터페이스
+- `core/factory/CryptoFactory`: 팩토리 패턴 구현
+- `core/utils/ByteUtils`: 바이트/패딩/16진수 유틸리티 (HexConverter, PaddingUtils 통합)
+- `algorithms/hash/Sha256Jdk`, `Sha256Kisa`: 해시 알고리즘 구현
+- `algorithms/cipher/SeedBlockCipher`, `AriaBlockCipher`: 블록 암호화 구현
 
-### 1. Single Responsibility Principle (SRP)
-- 각 클래스가 단일 책임을 가짐
-- `CryptoAlgorithm`: 알고리즘 기본 정보
-- `BlockCipher`: 블록 암호화 기능
-- `HashAlgorithm`: 해시 기능
-- `ByteUtils`: 바이트 조작 유틸리티
+---
 
-### 2. Open/Closed Principle (OCP)
-- `AbstractHashAlgorithm`: 확장에 열려있고 수정에 닫혀있음
-- 새로운 알고리즘 추가 시 기존 코드 수정 없이 확장 가능
+## SOLID 설계 원칙 적용
 
-### 3. Liskov Substitution Principle (LSP)
-- 모든 구현체가 인터페이스를 완전히 구현
-- `Sha256Jdk`와 `Sha256Kisa`가 `HashAlgorithm`을 대체 가능
+1. **SRP**: 각 클래스는 단일 책임만 가짐
+2. **OCP**: 새로운 알고리즘 추가 시 기존 코드 수정 없이 확장 가능
+3. **LSP**: 모든 구현체가 인터페이스를 완전히 구현
+4. **ISP**: 인터페이스 분리, 필요한 기능만 제공
+5. **DIP**: 팩토리/인터페이스 기반 의존성
 
-### 4. Interface Segregation Principle (ISP)
-- `CryptoAlgorithm`: 기본 정보만
-- `BlockCipher`: 암호화/복호화 기능
-- `HashAlgorithm`: 해시 기능
-
-### 5. Dependency Inversion Principle (DIP)
-- `CryptoFactory`: 구체 클래스가 아닌 인터페이스에 의존
-- 의존성 주입을 통한 느슨한 결합
+---
 
 ## 사용법
 
 ### 유틸리티 사용
-
 ```java
 // 16진수 변환
 String hex = ByteUtils.stringToHex("Hello");
@@ -78,7 +60,6 @@ ByteUtils.intToBytes(value, result, 0);
 ```
 
 ### 해시 알고리즘 사용
-
 ```java
 // JDK SHA-256
 HashAlgorithm sha256Jdk = CryptoFactory.createHashAlgorithm(CryptoFactory.HashType.SHA256_JDK);
@@ -86,11 +67,10 @@ String hash = sha256Jdk.hashToHex("Hello".getBytes());
 
 // KISA SHA-256
 HashAlgorithm sha256Kisa = CryptoFactory.createHashAlgorithm(CryptoFactory.HashType.SHA256_KISA);
-String hash = sha256Kisa.hashToHex("Hello".getBytes());
+String hash2 = sha256Kisa.hashToHex("Hello".getBytes());
 ```
 
 ### 블록 암호화 사용
-
 ```java
 // SEED 암호화
 BlockCipher seedCipher = CryptoFactory.createBlockCipher(CryptoFactory.CipherType.SEED);
@@ -99,37 +79,77 @@ byte[] decrypted = seedCipher.decrypt(encrypted, key);
 
 // ARIA 암호화
 BlockCipher ariaCipher = CryptoFactory.createBlockCipher(CryptoFactory.CipherType.ARIA);
-byte[] encrypted = ariaCipher.encrypt(plaintext, key);
-byte[] decrypted = ariaCipher.decrypt(encrypted, key);
+byte[] encrypted2 = ariaCipher.encrypt(plaintext, key);
+byte[] decrypted2 = ariaCipher.decrypt(encrypted2, key);
 ```
 
-## 지원하는 알고리즘
+---
+
+## 지원 알고리즘
 
 ### 해시 알고리즘
-- SHA-256 (JDK 구현)
-- SHA-256 (KISA 구현)
+- SHA-256 (JDK)
+- SHA-256 (KISA)
 
 ### 블록 암호화 알고리즘
 - SEED (128-bit)
 - ARIA (128-bit)
 
-## 빌드 및 실행
+---
 
+## 테스트
+
+프로젝트는 JUnit 5 기반의 체계적인 테스트를 제공합니다.
+
+### 테스트 실행
 ```bash
+# 전체 테스트 실행
+./gradlew test
+
+# 특정 테스트 클래스 실행
+./gradlew test --tests "*IntegratedCryptoTest*"
+
+# 특정 패키지 테스트 실행
+./gradlew test --tests "me.totoku103.crypto.core.*"
+```
+
+### 테스트 구조
+- `core/BaseCryptoTest`: 모든 테스트의 기본 클래스, 공통 유틸리티 제공
+- `core/IntegratedCryptoTest`: 모든 알고리즘 통합 테스트
+- `core/ExceptionTest`: 예외/경계 테스트
+- `core/factory/CryptoFactoryTest`: 팩토리 패턴 테스트
+- `core/utils/ByteUtilsTest`: 유틸리티 테스트
+- `algorithms/hash/Sha256JdkTest`, `cipher/SeedBlockCipherTest` 등: 알고리즘별 단위 테스트
+- `kisa/`, `java/`: 레거시 테스트 (하위 호환성)
+
+### 테스트 커버리지
+- 단위 테스트: 각 알고리즘의 개별 기능
+- 통합 테스트: 팩토리 기반 생성/사용
+- 예외 테스트: 잘못된 입력, 경계값
+- 성능 테스트: 대용량 데이터 처리
+
+---
+
+## 빌드 및 실행
+```bash
+# 코드 포맷팅
+./gradlew spotlessApply
+
 # 빌드
 ./gradlew build
 
-# 테스트 실행
+# 테스트
 ./gradlew test
-
-# 예제 실행
-./gradlew run
 ```
 
-## 기존 코드와의 호환성
+---
 
-기존 `java` 및 `kisa` 패키지의 구현은 `legacy` 패키지로 이동하여 하위 호환성을 유지합니다.
+## 레거시/하위 호환성
+- 기존 `HexConverter`, `PaddingUtils` 등은 `ByteUtils`로 통합
+- `legacy` 패키지에 Deprecated 처리로 이전 코드도 사용 가능
+- KISA/JDK 레거시 알고리즘도 테스트 및 사용 가능
 
-## 라이센스
+---
 
-이 프로젝트는 MIT 라이센스 하에 배포됩니다.
+## 라이선스
+MIT License

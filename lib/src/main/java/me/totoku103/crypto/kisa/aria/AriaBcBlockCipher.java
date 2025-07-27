@@ -1,11 +1,10 @@
 package me.totoku103.crypto.kisa.aria;
 
+import java.security.InvalidKeyException;
+import java.util.logging.Logger;
 import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.params.KeyParameter;
-
-import java.security.InvalidKeyException;
-import java.util.logging.Logger;
 
 /** BouncyCastle BlockCipher adapter for existing ARIA implementation. */
 public class AriaBcBlockCipher implements BlockCipher {

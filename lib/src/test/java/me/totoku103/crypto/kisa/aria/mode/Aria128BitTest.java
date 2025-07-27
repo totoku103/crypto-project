@@ -1,10 +1,9 @@
 package me.totoku103.crypto.kisa.aria.mode;
 
+import java.security.InvalidKeyException;
 import me.totoku103.crypto.core.utils.ByteUtils;
 import me.totoku103.crypto.kisa.aria.SimpleAria;
 import org.junit.jupiter.api.Test;
-
-import java.security.InvalidKeyException;
 
 public class Aria128BitTest {
 

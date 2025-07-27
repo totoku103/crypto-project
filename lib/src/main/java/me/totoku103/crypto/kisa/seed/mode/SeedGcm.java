@@ -1,12 +1,11 @@
 package me.totoku103.crypto.kisa.seed.mode;
 
-import me.totoku103.crypto.core.utils.ByteUtils;
-import me.totoku103.crypto.kisa.seed.Seed;
-import me.totoku103.crypto.kisa.seed.dto.EncryptGcmResult;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
+import me.totoku103.crypto.core.utils.ByteUtils;
+import me.totoku103.crypto.kisa.seed.Seed;
+import me.totoku103.crypto.kisa.seed.dto.EncryptGcmResult;
 
 public class SeedGcm {
   private final int BLOCK_SIZE_SEED = 16;
@@ -277,7 +276,7 @@ public class SeedGcm {
             addBytesLength,
             mKeyBytes);
     log.info("Encrypted length: " + encryptLength);
-            final String encryptMessage = ByteUtils.toHexString(ct);
+    final String encryptMessage = ByteUtils.toHexString(ct);
     log.info("Encrypted message: " + encryptMessage);
     return encryptMessage;
   }
@@ -285,7 +284,7 @@ public class SeedGcm {
   public String decrypt(String mKey, String cipherText, String nonce, String aad) {
     final byte[] mKeyBytes = getMKeyBytes(mKey);
 
-            final byte[] ct = ByteUtils.fromHexString(cipherText);
+    final byte[] ct = ByteUtils.fromHexString(cipherText);
     final int ctLen = ct.length;
     final int macLen = this.BLOCK_SIZE_SEED;
     final byte[] nonceBytes = nonce.getBytes(StandardCharsets.UTF_8);

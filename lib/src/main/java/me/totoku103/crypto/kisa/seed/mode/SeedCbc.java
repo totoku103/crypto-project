@@ -16,7 +16,7 @@ public class SeedCbc {
   }
 
   public byte[] encrypt(byte[] key, byte[] iv, byte[] plainText, boolean usePadding) {
-            byte[] target = usePadding ? ByteUtils.addPadding(plainText, BLOCK_SIZE) : plainText;
+    byte[] target = usePadding ? ByteUtils.addPadding(plainText, BLOCK_SIZE) : plainText;
 
     if (target.length % BLOCK_SIZE != 0) {
       throw new IllegalArgumentException(
@@ -97,7 +97,7 @@ public class SeedCbc {
       chain[3] = nextChain[3];
     }
 
-            return usePadding ? ByteUtils.removePadding(plainText, BLOCK_SIZE) : plainText;
+    return usePadding ? ByteUtils.removePadding(plainText, BLOCK_SIZE) : plainText;
   }
 
   private int[] bytesToInts(byte[] bytes) {

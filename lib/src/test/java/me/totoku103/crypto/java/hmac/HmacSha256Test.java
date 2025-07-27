@@ -1,14 +1,13 @@
 package me.totoku103.crypto.java.hmac;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.nio.charset.StandardCharsets;
 import me.totoku103.crypto.core.utils.ByteUtils;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.nio.charset.StandardCharsets;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class HmacSha256Test {
 
@@ -46,8 +45,7 @@ class HmacSha256Test {
   void testVector2() {
     Assumptions.assumeTrue(HmacSha256.isHmacSha256Available());
     byte[] key = "Jefe".getBytes(java.nio.charset.StandardCharsets.UTF_8);
-    byte[] data =
-        "what do ya want for nothing?".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    byte[] data = "what do ya want for nothing?".getBytes(java.nio.charset.StandardCharsets.UTF_8);
     byte[] expected =
         ByteUtils.fromHexString("5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843");
     byte[] out = new byte[32];

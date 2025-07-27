@@ -1,9 +1,8 @@
 package me.totoku103.crypto.java.sha3;
 
-import me.totoku103.crypto.enums.Sha3AlgorithmType;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import me.totoku103.crypto.enums.Sha3AlgorithmType;
 
 /** JDK MessageDigest를 이용해 속도를 높인 SHA-3 구현입니다. */
 public class Sha3 {

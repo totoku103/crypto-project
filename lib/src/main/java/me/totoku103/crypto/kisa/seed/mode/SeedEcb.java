@@ -1,8 +1,7 @@
 package me.totoku103.crypto.kisa.seed.mode;
 
-import me.totoku103.crypto.core.utils.ByteUtils;
-
 import java.nio.charset.StandardCharsets;
+import me.totoku103.crypto.core.utils.ByteUtils;
 
 public class SeedEcb {
   private static final int ENDIAN = Common.BIG_ENDIAN;
@@ -289,7 +288,7 @@ public class SeedEcb {
     }
     final byte[] dataBytes = plainText.getBytes(StandardCharsets.UTF_8);
     final byte[] encryptedBytes = seedEcbEncrypt(userKeyBytes, dataBytes, 0, dataBytes.length);
-            return ByteUtils.toHexString(encryptedBytes);
+    return ByteUtils.toHexString(encryptedBytes);
   }
 
   public static String decrypt(String userKey, String encryptedData) {
@@ -297,7 +296,7 @@ public class SeedEcb {
     if (userKeyBytes.length != 16) {
       throw new IllegalArgumentException("User key must be 16 bytes long.");
     }
-            final byte[] dataBytes = ByteUtils.fromHexString(encryptedData);
+    final byte[] dataBytes = ByteUtils.fromHexString(encryptedData);
     final byte[] decryptedBytes = seedEcbDecrypt(userKeyBytes, dataBytes, 0, dataBytes.length);
     return new String(decryptedBytes, StandardCharsets.UTF_8);
   }
