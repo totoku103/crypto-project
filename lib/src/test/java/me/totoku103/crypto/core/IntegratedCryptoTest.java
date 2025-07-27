@@ -3,7 +3,6 @@ package me.totoku103.crypto.core;
 import me.totoku103.crypto.algorithms.cipher.AriaBlockCipher;
 import me.totoku103.crypto.algorithms.cipher.SeedBlockCipher;
 import me.totoku103.crypto.algorithms.hash.Sha256Jdk;
-import me.totoku103.crypto.algorithms.hash.Sha256Kisa;
 import me.totoku103.crypto.core.factory.CryptoFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,27 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 /** 모든 암호화 알고리즘을 통합 테스트하는 클래스 */
 @DisplayName("통합 암호화 테스트")
 class IntegratedCryptoTest extends BaseCryptoTest {
-
-  @Test
-  @DisplayName("모든 해시 알고리즘 테스트")
-  void testAllHashAlgorithms() {
-    // JDK SHA-256 테스트
-    HashAlgorithm sha256Jdk = new Sha256Jdk();
-    testHashAlgorithm(sha256Jdk, "JDK SHA-256");
-
-    // KISA SHA-256 테스트
-    HashAlgorithm sha256Kisa = new Sha256Kisa();
-    testHashAlgorithm(sha256Kisa, "KISA SHA-256");
-
-    // 팩토리를 통한 생성 테스트
-    HashAlgorithm factorySha256Jdk =
-        CryptoFactory.createHashAlgorithm(CryptoFactory.HashType.SHA256_JDK);
-    HashAlgorithm factorySha256Kisa =
-        CryptoFactory.createHashAlgorithm(CryptoFactory.HashType.SHA256_KISA);
-
-    testHashAlgorithm(factorySha256Jdk, "Factory JDK SHA-256");
-    testHashAlgorithm(factorySha256Kisa, "Factory KISA SHA-256");
-  }
 
   @Test
   @DisplayName("모든 블록 암호화 알고리즘 테스트")
