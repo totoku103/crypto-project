@@ -94,6 +94,7 @@ byte[] decrypted2 = ariaCipher.decrypt(encrypted2, key);
 ### 블록 암호화 알고리즘
 - SEED (128-bit)
 - ARIA (128-bit)
+- AES (256-bit)
 
 ---
 
@@ -121,6 +122,9 @@ byte[] decrypted2 = ariaCipher.decrypt(encrypted2, key);
 - `core/utils/ByteUtilsTest`: 유틸리티 테스트
 - `algorithms/hash/Sha256JdkTest`, `cipher/SeedBlockCipherTest` 등: 알고리즘별 단위 테스트
 - `kisa/`, `java/`: 레거시 테스트 (하위 호환성)
+
+### Java 호환성
+- Gradle Toolchain으로 **JDK 8**을 강제하며, `./gradlew test` 실행 시 Temurin 1.8(AMD64)으로 전체 테스트를 검증합니다.
 
 ### 테스트 커버리지
 - 단위 테스트: 각 알고리즘의 개별 기능

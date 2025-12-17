@@ -1,6 +1,7 @@
 package me.totoku103.crypto.core.factory;
 
 import me.totoku103.crypto.algorithms.cipher.AriaBlockCipher;
+import me.totoku103.crypto.algorithms.cipher.Aes256BlockCipher;
 import me.totoku103.crypto.algorithms.cipher.SeedBlockCipher;
 import me.totoku103.crypto.algorithms.hash.Sha256Jdk;
 import me.totoku103.crypto.algorithms.hash.Sha256Kisa;
@@ -71,6 +72,18 @@ class CryptoFactoryTest {
   }
 
   @Test
+  void testCreateBlockCipherAes256() throws InvalidKeyException {
+    BlockCipher cipher = CryptoFactory.createBlockCipher(CryptoFactory.CipherType.AES256);
+
+    assertNotNull(cipher);
+    assertTrue(cipher instanceof Aes256BlockCipher);
+    assertEquals("AES-256", cipher.getAlgorithmName());
+    assertEquals("1.0.0", cipher.getVersion());
+    assertEquals(16, cipher.getBlockSize());
+    assertEquals(32, cipher.getKeySize());
+  }
+
+  @Test
   void testCreateBlockCipherWithInvalidType() {
     assertThrows(
         IllegalArgumentException.class,
@@ -134,9 +147,10 @@ class CryptoFactoryTest {
   @Test
   void testCipherTypeEnum() {
     // 모든 암호화 타입이 올바르게 정의되어 있는지 확인
-    assertEquals(2, CryptoFactory.CipherType.values().length);
+    assertEquals(3, CryptoFactory.CipherType.values().length);
 
     assertNotNull(CryptoFactory.CipherType.valueOf("SEED"));
     assertNotNull(CryptoFactory.CipherType.valueOf("ARIA"));
+    assertNotNull(CryptoFactory.CipherType.valueOf("AES256"));
   }
 }

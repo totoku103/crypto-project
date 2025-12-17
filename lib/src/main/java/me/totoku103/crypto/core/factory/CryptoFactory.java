@@ -1,5 +1,6 @@
 package me.totoku103.crypto.core.factory;
 
+import me.totoku103.crypto.algorithms.cipher.Aes256BlockCipher;
 import me.totoku103.crypto.algorithms.cipher.AriaBlockCipher;
 import me.totoku103.crypto.algorithms.cipher.SeedBlockCipher;
 import me.totoku103.crypto.algorithms.hash.Sha256Jdk;
@@ -21,7 +22,8 @@ public class CryptoFactory {
   /** 블록 암호화 알고리즘 타입 */
   public enum CipherType {
     SEED,
-    ARIA
+    ARIA,
+    AES256
   }
 
   /**
@@ -62,6 +64,8 @@ public class CryptoFactory {
         return new SeedBlockCipher();
       case ARIA:
         return new AriaBlockCipher();
+      case AES256:
+        return new Aes256BlockCipher();
       default:
         throw new IllegalArgumentException("Unsupported cipher type: " + type);
     }
