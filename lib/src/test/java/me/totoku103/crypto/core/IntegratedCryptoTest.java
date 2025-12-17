@@ -1,5 +1,6 @@
 package me.totoku103.crypto.core;
 
+import me.totoku103.crypto.algorithms.cipher.Aes256BlockCipher;
 import me.totoku103.crypto.algorithms.cipher.AriaBlockCipher;
 import me.totoku103.crypto.algorithms.cipher.SeedBlockCipher;
 import me.totoku103.crypto.algorithms.hash.Sha256Jdk;
@@ -20,18 +21,24 @@ class IntegratedCryptoTest extends BaseCryptoTest {
   void testAllBlockCipherAlgorithms() throws InvalidKeyException {
     // SEED 테스트
     SeedBlockCipher seedCipher = new SeedBlockCipher();
-    testBlockCipher(seedCipher, "SEED");
+    testBlockCipher(seedCipher, "SEED", TEST_KEY_16);
 
     // ARIA 테스트
     AriaBlockCipher ariaCipher = new AriaBlockCipher();
-    testBlockCipher(ariaCipher, "ARIA");
+    testBlockCipher(ariaCipher, "ARIA", TEST_KEY_16);
+
+    // AES-256 테스트
+    Aes256BlockCipher aes256BlockCipher = new Aes256BlockCipher();
+    testBlockCipher(aes256BlockCipher, "AES-256", TEST_KEY_32);
 
     // 팩토리를 통한 생성 테스트
     BlockCipher factorySeedCipher = CryptoFactory.createBlockCipher(CryptoFactory.CipherType.SEED);
     BlockCipher factoryAriaCipher = CryptoFactory.createBlockCipher(CryptoFactory.CipherType.ARIA);
+    BlockCipher factoryAesCipher = CryptoFactory.createBlockCipher(CryptoFactory.CipherType.AES256);
 
-    testBlockCipher(factorySeedCipher, "Factory SEED");
-    testBlockCipher(factoryAriaCipher, "Factory ARIA");
+    testBlockCipher(factorySeedCipher, "Factory SEED", TEST_KEY_16);
+    testBlockCipher(factoryAriaCipher, "Factory ARIA", TEST_KEY_16);
+    testBlockCipher(factoryAesCipher, "Factory AES-256", TEST_KEY_32);
   }
 
   @Test
@@ -39,6 +46,7 @@ class IntegratedCryptoTest extends BaseCryptoTest {
   void testWithVariousInputData() throws InvalidKeyException {
     SeedBlockCipher seedCipher = new SeedBlockCipher();
     AriaBlockCipher ariaCipher = new AriaBlockCipher();
+    Aes256BlockCipher aesCipher = new Aes256BlockCipher();
 
     for (String testString : TEST_STRINGS) {
       byte[] testData = testString.getBytes();
@@ -52,6 +60,11 @@ class IntegratedCryptoTest extends BaseCryptoTest {
       byte[] ariaEncrypted = ariaCipher.encrypt(testData, TEST_KEY_16);
       byte[] ariaDecrypted = ariaCipher.decrypt(ariaEncrypted, TEST_KEY_16);
       assertEncryptDecryptMatch(testData, ariaDecrypted, "ARIA with " + testString);
+
+      // AES-256 테스트
+      byte[] aesEncrypted = aesCipher.encrypt(testData, TEST_KEY_32);
+      byte[] aesDecrypted = aesCipher.decrypt(aesEncrypted, TEST_KEY_32);
+      assertEncryptDecryptMatch(testData, aesDecrypted, "AES-256 with " + testString);
     }
   }
 
@@ -153,13 +166,13 @@ class IntegratedCryptoTest extends BaseCryptoTest {
         algorithmName + " should throw exception for null input");
   }
 
-  private void testBlockCipher(BlockCipher cipher, String algorithmName)
+  private void testBlockCipher(BlockCipher cipher, String algorithmName, byte[] key)
       throws InvalidKeyException {
     System.out.println("Testing " + algorithmName);
 
     // 기본 속성 테스트
     assertEquals(16, cipher.getBlockSize(), algorithmName + " block size");
-    assertEquals(16, cipher.getKeySize(), algorithmName + " key size");
+    assertEquals(key.length, cipher.getKeySize(), algorithmName + " key size");
     assertNotNull(cipher.getAlgorithmName(), algorithmName + " algorithm name");
     assertNotNull(cipher.getVersion(), algorithmName + " version");
 
@@ -168,12 +181,13 @@ class IntegratedCryptoTest extends BaseCryptoTest {
       byte[] input = testString.getBytes();
 
       // 암호화 테스트
-      byte[] encrypted = cipher.encrypt(input, TEST_KEY_16);
+      byte[] encrypted = cipher.encrypt(input, key);
       assertValidBytes(encrypted, algorithmName + " encrypted result");
-      assertEquals(16, encrypted.length, algorithmName + " encrypted length should be 16 bytes");
+      assertEquals(0, encrypted.length % cipher.getBlockSize(),
+          algorithmName + " encrypted length should align with block size");
 
       // 복호화 테스트
-      byte[] decrypted = cipher.decrypt(encrypted, TEST_KEY_16);
+      byte[] decrypted = cipher.decrypt(encrypted, key);
       assertValidBytes(decrypted, algorithmName + " decrypted result");
 
       // 원본과 복호화된 결과가 같아야 함
@@ -193,7 +207,7 @@ class IntegratedCryptoTest extends BaseCryptoTest {
     assertThrows(
         IllegalArgumentException.class,
         () -> {
-          cipher.encrypt(null, TEST_KEY_16);
+          cipher.encrypt(null, key);
         },
         algorithmName + " should throw exception for null plaintext");
 
