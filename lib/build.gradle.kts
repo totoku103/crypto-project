@@ -8,6 +8,7 @@
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+    `maven-publish`
 }
 
 
@@ -44,5 +45,55 @@ tasks.named<Test>("test") {
 
 tasks.jar {
     archiveBaseName.set("crypto")
-    archiveVersion.set("1.0.0")
+    archiveVersion.set("1.0.1")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "me.totoku103"
+            artifactId = "crypto"
+            version = "1.0.1"
+
+            from(components["java"])
+        }
+    }
+
+    repositories {
+        maven {
+            name = "Local"
+            url = uri("file:///Users/totoku103/Totoku103Projects/totoku103-maven-repository/releases")
+        }
+    }
+}
+
+// GitHub에 자동 배포하는 태스크
+tasks.register("publishToGitHub") {
+    group = "publishing"
+    description = "Publish to local Maven repository and push to GitHub"
+
+    dependsOn("publishMavenPublicationToLocalRepository")
+
+    doLast {
+        val repoPath = "/Users/totoku103/Totoku103Projects/totoku103-maven-repository/releases"
+        val version = "1.0.1"
+
+        exec {
+            workingDir = file(repoPath)
+            commandLine("git", "add", "me/")
+        }
+
+        exec {
+            workingDir = file(repoPath)
+            commandLine("git", "commit", "-m", "Deploy me.totoku103:crypto:$version")
+        }
+
+        exec {
+            workingDir = file(repoPath)
+            commandLine("git", "push")
+        }
+
+        println("\n✅ Successfully published to GitHub!")
+        println("📦 Repository: https://github.com/totoku103/totoku103-maven-repository")
+    }
 }
