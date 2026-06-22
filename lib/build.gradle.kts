@@ -44,7 +44,7 @@ tasks.named<Test>("test") {
 
 tasks.jar {
     archiveBaseName.set("crypto")
-    archiveVersion.set("1.0.1")
+    archiveVersion.set("1.0.2")
 }
 
 publishing {
@@ -52,7 +52,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "me.totoku103"
             artifactId = "crypto"
-            version = "1.0.1"
+            version = "1.0.2"
 
             from(components["java"])
         }
@@ -61,7 +61,7 @@ publishing {
     repositories {
         maven {
             name = "Local"
-            url = uri("file:///Users/totoku103/Totoku103Projects/totoku103-maven-repository/releases")
+            url = uri("file:///Users/totoku103/Project-Private/totoku103-maven-repository/releases")
         }
     }
 }
@@ -74,8 +74,8 @@ tasks.register("publishToGitHub") {
     dependsOn("publishMavenPublicationToLocalRepository")
 
     doLast {
-        val repoPath = "/Users/totoku103/Totoku103Projects/totoku103-maven-repository/releases"
-        val version = "1.0.1"
+        val repoPath = "/Users/totoku103/Project-Private/totoku103-maven-repository/releases"
+        val version = "1.0.2"
 
         exec {
             workingDir = file(repoPath)
