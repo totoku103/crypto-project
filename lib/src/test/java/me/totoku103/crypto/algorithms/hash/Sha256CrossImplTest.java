@@ -158,56 +158,55 @@ class Sha256CrossImplTest {
   }
 
   @Test
-  @DisplayName("[BugDetect] Sha256Kisa.hashToHex('abc') — Integer.toHexString() 제로패딩 누락 버그 명세")
-  void kisa_hashToHex_abc_zeroPaddingBugSpec() {
+  @DisplayName("[Regression] Sha256Kisa.hashToHex('abc')는 제로패딩 적용 후 FIPS 180-4 벡터와 일치")
+  void kisa_hashToHex_abc_zeroPaddingApplied() {
     /*
-     * Sha256Kisa.hashToHex()는 내부적으로 me.totoku103.crypto.kisa.sha2.Sha256.encrypt(byte[])를
-     * 호출하며, 해당 메서드는 각 바이트를 Integer.toHexString(0xff & b)로 변환한다.
-     * 이 방식은 0x0a → "a" (2자리 아닌 1자리)처럼 제로패딩을 하지 않아
-     * 결과 문자열 길이가 64자 미만이 될 수 있다.
+     * Sha256Kisa.hashToHex()는 me.totoku103.crypto.kisa.sha2.Sha256.encrypt(byte[])를 호출하며,
+     * 과거 구현은 각 바이트를 Integer.toHexString(0xff & b)로 변환해 0x01 → "1"(한 자리)처럼
+     * 제로패딩을 누락, 결과가 64자 미만이 되는 버그가 있었다.
      *
-     * 이 테스트는 해당 버그의 현재 동작을 명세(document)한다.
-     * 제로패딩 버그가 수정되면 이 테스트가 실패하며 수정 사실을 감지할 수 있다.
-     *
-     * 'abc'의 SHA-256 다이제스트 ba7816bf...는 모든 바이트가 두 자리 16진수이므로
-     * 'abc'만으로는 버그가 드러나지 않는다. 실제 버그가 드러나는 입력을 추가로 검증한다.
+     * 'abc'의 다이제스트 ba7816bf 8f01 ...에는 0x01 바이트가 있어 패딩 누락 시 결과가 어긋난다.
+     * 제로패딩이 올바르게 적용되면 FIPS 180-4 벡터·JDK 결과와 정확히 일치한다.
      */
     String kisaHex = kisa.hashToHex("abc".getBytes(StandardCharsets.UTF_8));
     String jdkHex = jdk.hashToHex("abc".getBytes(StandardCharsets.UTF_8));
 
-    // 'abc'는 다이제스트 모든 바이트가 두 자리이므로 이 경우에는 동일
+    assertEquals(64, kisaHex.length(), "제로패딩이 적용되어 64자여야 한다");
     assertEquals(KAT_ABC_HEX, kisaHex,
-        "Sha256Kisa.hashToHex('abc')는 'abc' 벡터에서 우연히 JDK와 동일해야 한다");
+        "Sha256Kisa.hashToHex('abc')는 FIPS 180-4 벡터와 일치해야 한다");
     assertEquals(jdkHex, kisaHex,
-        "Sha256Kisa.hashToHex('abc') KAT 입력에서는 JDK 결과와 동일해야 한다");
+        "Sha256Kisa.hashToHex('abc')는 JDK 결과와 일치해야 한다");
   }
 
   @Test
-  @DisplayName("[BugDetect] Sha256Kisa.hashToHex() — 제로패딩 누락으로 결과 길이 < 64 또는 JDK와 불일치하는 입력 존재")
-  void kisa_hashToHex_zeroPaddingBug_exploitWithKnownInput() {
+  @DisplayName("[Regression] Sha256Kisa.hashToHex() — 0x0* 바이트 포함 다이제스트도 64자로 제로패딩되어 JDK와 일치")
+  void kisa_hashToHex_lowByteDigest_zeroPaddingFixed() {
     /*
-     * 빈 문자열의 SHA-256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-     * 이 중 0x0c (12)는 "c"(1자리)로 변환되어 제로패딩 버그가 드러난다.
-     *
-     * 버그 현황:
-     *   Sha256Kisa.hashToHex("") → e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-     *   에서 0x0c → "c", 0x09 → "9" 등의 처리를 확인한다.
-     *
-     * 만약 미래에 버그가 수정되면 kisaHex.length() == 64가 되고
-     * 이 테스트의 assertNotEquals 단언이 실패하여 수정 사실을 알린다.
+     * 다이제스트에 0x00~0x0f 바이트가 포함되는 입력을 탐색한다.
+     * 제로패딩 누락 버그가 있으면 이런 입력에서 결과가 64자 미만이 되거나 JDK와 달라진다.
+     * 버그가 수정된 현재는 항상 64자이며 JDK 결과와 정확히 일치해야 한다.
      */
-    byte[] emptyInput = new byte[0];
-    String kisaHex = kisa.hashToHex(emptyInput);
-    String jdkHex = jdk.hashToHex(emptyInput);
+    byte[] lowByteInput = null;
+    String expectedHex = null;
+    for (int i = 0; i < 2000; i++) {
+      byte[] candidate = ("zero-pad-probe-" + i).getBytes(StandardCharsets.UTF_8);
+      byte[] digest = jdk.hash(candidate);
+      for (byte b : digest) {
+        if ((b & 0xff) < 0x10) {
+          lowByteInput = candidate;
+          expectedHex = jdk.hashToHex(candidate);
+          break;
+        }
+      }
+      if (lowByteInput != null) break;
+    }
+    assertNotNull(lowByteInput, "0x0* 바이트를 포함하는 다이제스트 입력을 찾아야 한다");
 
-    // 빈 문자열의 다이제스트에는 0x0c(→"c"), 0x4a(→"4a"), 0x49(→"49") 등
-    // 0x0* 바이트가 포함되어 실제로 제로패딩 누락이 발생한다.
-    // 현재 버그 상태에서 kisaHex 길이가 64 미만이거나 jdkHex와 다를 것임을 명세한다.
-    assertTrue(
-        kisaHex.length() < 64 || !kisaHex.equals(jdkHex),
-        "제로패딩 버그로 인해 Sha256Kisa.hashToHex(빈 문자열) 결과 길이가 64 미만이거나 "
-            + "Sha256Jdk 결과와 달라야 한다 (버그 수정 시 이 단언이 실패하며 수정을 감지한다). "
-            + "kisaHex.length()=" + kisaHex.length() + ", jdkHex.length()=" + jdkHex.length());
+    String kisaHex = kisa.hashToHex(lowByteInput);
+    assertEquals(64, kisaHex.length(),
+        "제로패딩이 적용되어 항상 64자여야 한다. kisaHex=" + kisaHex);
+    assertEquals(expectedHex, kisaHex,
+        "Sha256Kisa.hashToHex가 JDK 결과와 정확히 일치해야 한다");
   }
 
   // ── NullPointerException 동작 ─────────────────────────────────────────────

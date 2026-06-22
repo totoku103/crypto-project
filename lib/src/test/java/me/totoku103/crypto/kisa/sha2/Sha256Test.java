@@ -30,8 +30,9 @@ class Sha256Test {
   void encrypt_stringOutput_abc() {
     final String plainText = "abc";
     final byte[] plainBytes = plainText.getBytes(StandardCharsets.UTF_8);
-    // KISA 구현은 16진수 변환 시 패딩을 하지 않으므로(e.g., 0x01 -> "1"), 예상 결과가 다름
-    final String expectedString = "ba7816bf8f1cfea414140de5dae2223b0361a396177a9cb410ff61f2015ad";
+    // 제로패딩이 적용되어 표준 64자 16진수 문자열(FIPS 180-4 'abc' 벡터)과 일치한다.
+    final String expectedString =
+        "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad";
 
     final String actualString = Sha256.encrypt(plainBytes);
 
