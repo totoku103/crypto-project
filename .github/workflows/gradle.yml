@@ -21,11 +21,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up JDK 8
+    # Gradle 9.6은 실행 JVM으로 17 이상을 요구하므로 21을 설치하고,
+    # Java 8 toolchain 컴파일을 위해 JDK 8도 함께 설치한다(JAVA_HOME은 마지막 21로 설정됨).
+    - name: Set up JDKs (8 for toolchain, 21 to run Gradle)
       uses: actions/setup-java@v4
       with:
-        java-version: '8'
         distribution: 'temurin'
+        java-version: |
+          8
+          21
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0

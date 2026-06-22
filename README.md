@@ -83,6 +83,34 @@ byte[] encrypted2 = ariaCipher.encrypt(plaintext, key);
 byte[] decrypted2 = ariaCipher.decrypt(encrypted2, key);
 ```
 
+### 비밀번호 해싱 (단방향, salt 적용)
+사용자 비밀번호 저장 전용 모듈입니다. 블록 암호와 달리 **복호화가 불가능한 단방향 해시**이며,
+인코딩 시 사용자별 16바이트 랜덤 salt(`SecureRandom`)가 자동 생성되어 결과 문자열에 포함됩니다.
+같은 비밀번호라도 매번 다른 해시가 생성되어 레인보우 테이블 공격에 안전합니다.
+
+```java
+import me.totoku103.crypto.password.PasswordEncoder;
+import me.totoku103.crypto.password.BCryptPasswordEncoder;
+
+// work factor(cost) 기본값 12. 필요 시 new BCryptPasswordEncoder(13)으로 강도 조정
+PasswordEncoder encoder = new BCryptPasswordEncoder();
+
+// 비밀번호 저장 시
+String stored = encoder.encode("rawPassword");   // 예: $2y$12$... (60자, salt 포함)
+
+// 로그인 검증 시
+boolean ok = encoder.matches("rawPassword", stored);
+
+// 점진적 마이그레이션: 저장된 해시가 레거시이거나 cost가 낮으면 재해시 필요
+if (encoder.upgradeNeeded(stored)) {
+    String rehashed = encoder.encode("rawPassword"); // 로그인 성공 시점에 재저장
+}
+```
+
+> 알고리즘: bcrypt(OpenBSD `$2y$` 표준 포맷, BouncyCastle `OpenBSDBCrypt`).
+> KT 비밀번호 저장 기준(단방향 HASH, salt ≥16byte 사용자별 랜덤) 충족.
+> 참고: bcrypt는 비밀번호 앞 72바이트만 사용합니다.
+
 ---
 
 ## 지원 알고리즘
@@ -95,6 +123,9 @@ byte[] decrypted2 = ariaCipher.decrypt(encrypted2, key);
 - SEED (128-bit)
 - ARIA (128-bit)
 - AES (256-bit)
+
+### 비밀번호 해시 알고리즘
+- bcrypt (`$2y$`, work factor 설정 가능, 16byte 랜덤 salt 자동 적용)
 
 ---
 

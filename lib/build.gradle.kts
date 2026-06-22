@@ -5,6 +5,9 @@
  * For more details on building Java & JVM projects, please refer to https://docs.gradle.org/8.14.1/userguide/building_java_projects.html in the Gradle documentation.
  */
 
+import org.gradle.process.ExecOperations
+import javax.inject.Inject
+
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
@@ -20,7 +23,6 @@ repositories {
 dependencies {
     // Use JUnit Jupiter for testing.
     testImplementation(libs.junit.jupiter)
-    implementation("org.bouncycastle:bcprov-jdk18on:1.81")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     // This dependency is exported to consumers, that is to say found on their compile classpath.
@@ -45,7 +47,7 @@ tasks.named<Test>("test") {
 
 tasks.jar {
     archiveBaseName.set("crypto")
-    archiveVersion.set("1.0.1")
+    archiveVersion.set("1.0.3")
 }
 
 publishing {
@@ -53,7 +55,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "me.totoku103"
             artifactId = "crypto"
-            version = "1.0.1"
+            version = "1.0.3"
 
             from(components["java"])
         }
@@ -62,9 +64,15 @@ publishing {
     repositories {
         maven {
             name = "Local"
-            url = uri("file:///Users/totoku103/Totoku103Projects/totoku103-maven-repository/releases")
+            url = uri("file:///Users/totoku103/Project-Private/totoku103-maven-repository/releases")
         }
     }
+}
+
+// ExecOperations 주입용 인터페이스 (Gradle 9에서 Project.exec 제거 대응)
+interface InjectedExecOps {
+    @get:Inject
+    val execOps: ExecOperations
 }
 
 // GitHub에 자동 배포하는 태스크
@@ -74,22 +82,23 @@ tasks.register("publishToGitHub") {
 
     dependsOn("publishMavenPublicationToLocalRepository")
 
-    doLast {
-        val repoPath = "/Users/totoku103/Totoku103Projects/totoku103-maven-repository/releases"
-        val version = "1.0.1"
+    val injected = project.objects.newInstance<InjectedExecOps>()
+    val repoDir = file("/Users/totoku103/Project-Private/totoku103-maven-repository/releases")
+    val version = "1.0.3"
 
-        exec {
-            workingDir = file(repoPath)
+    doLast {
+        injected.execOps.exec {
+            workingDir = repoDir
             commandLine("git", "add", "me/")
         }
 
-        exec {
-            workingDir = file(repoPath)
+        injected.execOps.exec {
+            workingDir = repoDir
             commandLine("git", "commit", "-m", "Deploy me.totoku103:crypto:$version")
         }
 
-        exec {
-            workingDir = file(repoPath)
+        injected.execOps.exec {
+            workingDir = repoDir
             commandLine("git", "push")
         }
 

@@ -188,7 +188,10 @@ public class Sha256 {
    * @param uDataLen : 사용자 입력 평문 길이
    */
   public static void process(Sha256Info Info, byte[] pszMessage, int uDataLen) {
-    int pszMessageOffset = Info.remainNum;
+    // 입력(pszMessage)에서 읽어들인 위치
+    int srcOffset = 0;
+    // szBuffer에 이미 채워진(직전 호출에서 남은) 바이트 수
+    int bufferFilled = Info.remainNum;
 
     if ((Info.uLowLength += (uDataLen << 3)) < 0) {
       Info.uHighLength++;
@@ -196,17 +199,18 @@ public class Sha256 {
 
     Info.uHighLength += Common.shiftUR(uDataLen, 29);
 
-    while (uDataLen + pszMessageOffset >= SHA256_DIGEST_BLOCK_LEN) {
-      Common.copyArrayOffset(
-          Info.szBuffer, pszMessageOffset, pszMessage, 0, SHA256_DIGEST_BLOCK_LEN);
+    while (uDataLen + bufferFilled >= SHA256_DIGEST_BLOCK_LEN) {
+      // 한 블록을 채우는 데 필요한 만큼만 복사한다.
+      int copyLen = SHA256_DIGEST_BLOCK_LEN - bufferFilled;
+      Common.copyArrayOffset(Info.szBuffer, bufferFilled, pszMessage, srcOffset, copyLen);
       transform(Info.szBuffer, Info.uChainVar);
-      pszMessageOffset += SHA256_DIGEST_BLOCK_LEN - pszMessageOffset;
-      uDataLen -= SHA256_DIGEST_BLOCK_LEN - pszMessageOffset;
-      pszMessageOffset = 0;
+      srcOffset += copyLen;
+      uDataLen -= copyLen;
+      bufferFilled = 0;
     }
 
-    Common.copyArrayOffset(Info.szBuffer, pszMessageOffset, pszMessage, 0, uDataLen);
-    Info.remainNum = pszMessageOffset + uDataLen;
+    Common.copyArrayOffset(Info.szBuffer, bufferFilled, pszMessage, srcOffset, uDataLen);
+    Info.remainNum = bufferFilled + uDataLen;
   }
 
   /**
@@ -266,7 +270,8 @@ public class Sha256 {
     close(info, pbCipher);
     final StringBuilder sb = new StringBuilder();
     for (final byte b : pbCipher) {
-      sb.append(Integer.toHexString(0xff & b));
+      // 0x00~0x0f 바이트도 두 자리로 제로패딩한다. (Integer.toHexString은 한 자리로 출력됨)
+      sb.append(String.format("%02x", b & 0xff));
     }
     return sb.toString();
   }
