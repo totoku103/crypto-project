@@ -111,6 +111,38 @@ if (encoder.upgradeNeeded(stored)) {
 > KT 비밀번호 저장 기준(단방향 HASH, salt ≥16byte 사용자별 랜덤) 충족.
 > 참고: bcrypt는 비밀번호 앞 72바이트만 사용합니다.
 
+#### Argon2id (권장)
+
+`Argon2idPasswordEncoder`는 메모리-하드 단방향 해시로, **해시 출력 256비트(32byte)**를 보장합니다.
+bcrypt와 동일하게 16바이트 사용자별 랜덤 salt(`SecureRandom`)를 적용하며, 결과는 표준 PHC 문자열에
+파라미터·salt가 모두 포함(self-contained)되어 별도 컬럼 없이 검증됩니다.
+
+```java
+import me.totoku103.crypto.password.PasswordEncoder;
+import me.totoku103.crypto.password.Argon2idPasswordEncoder;
+
+// 기본 파라미터: OWASP 옵션 A (메모리 46MiB, 반복 1, 병렬 1)
+PasswordEncoder encoder = new Argon2idPasswordEncoder();
+// 필요 시 new Argon2idPasswordEncoder(memoryKb, iterations, parallelism)로 조정
+
+// 비밀번호 저장 시
+String stored = encoder.encode("rawPassword");
+// 예: $argon2id$v=19$m=47104,t=1,p=1$<base64 salt>$<base64 hash>
+
+// 로그인 검증 시
+boolean ok = encoder.matches("rawPassword", stored);
+
+// 점진적 마이그레이션: 저장된 파라미터가 현재 정책보다 낮으면 재해시 필요
+if (encoder.upgradeNeeded(stored)) {
+    String rehashed = encoder.encode("rawPassword");
+}
+```
+
+> 알고리즘: Argon2id(표준 PHC 포맷, BouncyCastle `Argon2BytesGenerator`), OWASP 1순위 권장.
+> 비밀번호 저장 기준(단방향 HASH **256비트 이상**, salt ≥16byte 사용자별 랜덤)을 명시적으로 충족합니다.
+> 검증(`matches`)은 저장된 버전(v=16/v=19)으로 수행되어 레거시 Argon2 해시도 인증할 수 있습니다.
+> 자세한 기준 충족 근거는 [`docs/password-encryption-evidence.md`](docs/password-encryption-evidence.md) 참고.
+
 ---
 
 ## 지원 알고리즘
@@ -126,6 +158,7 @@ if (encoder.upgradeNeeded(stored)) {
 
 ### 비밀번호 해시 알고리즘
 - bcrypt (`$2y$`, work factor 설정 가능, 16byte 랜덤 salt 자동 적용)
+- Argon2id (PHC 포맷, 256bit 해시 출력, 16byte 랜덤 salt, OWASP 권장 파라미터)
 
 ---
 
