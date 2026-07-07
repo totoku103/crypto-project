@@ -78,7 +78,7 @@ class CryptoFactoryTest {
     assertNotNull(cipher);
     assertTrue(cipher instanceof Aes256BlockCipher);
     assertEquals("AES-256", cipher.getAlgorithmName());
-    assertEquals("1.0.0", cipher.getVersion());
+    assertEquals("1.1.0", cipher.getVersion());
     assertEquals(16, cipher.getBlockSize());
     assertEquals(32, cipher.getKeySize());
   }

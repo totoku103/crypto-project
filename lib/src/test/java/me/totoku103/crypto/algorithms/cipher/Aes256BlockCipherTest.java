@@ -22,7 +22,7 @@ class Aes256BlockCipherTest {
   @Test
   void testGetVersion() {
     Aes256BlockCipher cipher = new Aes256BlockCipher();
-    assertEquals("1.0.0", cipher.getVersion());
+    assertEquals("1.1.0", cipher.getVersion());
   }
 
   @Test
