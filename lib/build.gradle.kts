@@ -14,6 +14,8 @@ plugins {
     `maven-publish`
 }
 
+// 배포 버전. 여기 한 곳만 고치면 jar / publish / GitHub 배포에 모두 반영된다.
+val libraryVersion = "1.1.0"
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -47,7 +49,7 @@ tasks.named<Test>("test") {
 
 tasks.jar {
     archiveBaseName.set("crypto")
-    archiveVersion.set("1.1.0")
+    archiveVersion.set(libraryVersion)
 }
 
 publishing {
@@ -55,7 +57,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "me.totoku103"
             artifactId = "crypto"
-            version = "1.1.0"
+            version = libraryVersion
 
             from(components["java"])
         }
@@ -84,7 +86,7 @@ tasks.register("publishToGitHub") {
 
     val injected = project.objects.newInstance<InjectedExecOps>()
     val repoDir = file("/Users/totoku103/Project-Private/totoku103-maven-repository/releases")
-    val version = "1.1.0"
+    val version = libraryVersion
 
     doLast {
         injected.execOps.exec {
